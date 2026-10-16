@@ -1,0 +1,8 @@
+# MPEG-21 CEL Server (patched for DMAF). Python 3.9 – 3.12.
+# The reference pinned 2021 versions (web3 5, fastapi 0.70); these are their
+# current equivalents. pydantic stays on v1 because the models use its v1 API.
+fastapi==0.115.6
+pydantic==1.10.21
+uvicorn==0.32.1
+web3==6.20.3
+python-multipart==0.0.20

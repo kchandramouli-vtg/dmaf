@@ -1,0 +1,7 @@
+node_modules/
+chain/cache/
+chain/artifacts/
+.DS_Store
+.data/
+services/cel-server/.venv/
+__pycache__/

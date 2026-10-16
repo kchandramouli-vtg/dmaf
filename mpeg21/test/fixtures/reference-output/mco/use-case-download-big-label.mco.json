@@ -1,0 +1,391 @@
+{
+  "contracts": [
+    {
+      "class": "Contract",
+      "identifier": "http://mpeg.org/contract4",
+      "metadata": {
+        "rdfs:label": "CONTRACT 4 - Digital sale - Big labels. For record labels that have a direct deal with record labels."
+      },
+      "parties": {
+        "http://mpeg.org/RecordLabel": {
+          "class": "Producer",
+          "role": "Producer",
+          "identifier": "http://mpeg.org/RecordLabel",
+          "metadata": {
+            "rdfs:label": "RECORD LABEL"
+          },
+          "actionsIsSubject": [
+            "http://mpeg.org/pay6",
+            "http://mpeg.org/action5",
+            "http://mpeg.org/action4",
+            "http://mpeg.org/pay2",
+            "http://mpeg.org/pay3"
+          ],
+          "deonticsIssued": [
+            "http://mpeg.org/obligation2",
+            "http://mpeg.org/permission2",
+            "http://mpeg.org/obligation7",
+            "http://mpeg.org/obligation4",
+            "http://mpeg.org/obligation5"
+          ]
+        },
+        "http://mpeg.org/Musicians": {
+          "class": "Instantiator",
+          "role": "Instantiator",
+          "identifier": "http://mpeg.org/Musicians",
+          "metadata": {
+            "rdfs:label": "MUSICIANS"
+          }
+        },
+        "http://mpeg.org/SongWriter": {
+          "class": "Party",
+          "identifier": "http://mpeg.org/SongWriter",
+          "metadata": {
+            "rdfs:label": "SONG WRITER"
+          }
+        },
+        "http://mpeg.org/DigitalSale": {
+          "class": "Distributor",
+          "role": "Distributor",
+          "identifier": "http://mpeg.org/DigitalSale",
+          "metadata": {
+            "rdfs:label": "DIGITAL SALE"
+          },
+          "deonticsIssued": [
+            "http://mpeg.org/obligation8",
+            "http://mpeg.org/permission1",
+            "http://mpeg.org/obligation6"
+          ],
+          "actionsIsSubject": [
+            "http://mpeg.org/action2",
+            "http://mpeg.org/pay4"
+          ]
+        },
+        "http://mpeg.org/Publisher": {
+          "class": "Party",
+          "identifier": "http://mpeg.org/Publisher",
+          "metadata": {
+            "rdfs:label": "PUBLISHER"
+          },
+          "deonticsIssued": [
+            "http://mpeg.org/permission3",
+            "http://mpeg.org/obligation1"
+          ],
+          "actionsIsSubject": [
+            "http://mpeg.org/pay7"
+          ]
+        },
+        "http://mpeg.org/Consumer": {
+          "class": "EndUser",
+          "role": "EndUser",
+          "identifier": "http://mpeg.org/Consumer",
+          "metadata": {
+            "rdfs:label": "CONSUMER"
+          },
+          "actionsIsSubject": [
+            "http://mpeg.org/action1",
+            "http://mpeg.org/pay1"
+          ],
+          "deonticsIssued": [
+            "http://mpeg.org/obligation3"
+          ]
+        },
+        "http://mpeg.org/ArtistBand": {
+          "class": "Creator",
+          "role": "Creator",
+          "identifier": "http://mpeg.org/ArtistBand",
+          "metadata": {
+            "rdfs:label": "ARTIST / BAND"
+          },
+          "actionsIsSubject": [
+            "http://mpeg.org/action3"
+          ],
+          "deonticsIssued": [
+            "http://mpeg.org/permission4"
+          ]
+        }
+      },
+      "deontics": {
+        "http://mpeg.org/obligation8": {
+          "class": "Obligation",
+          "type": "Obligation",
+          "identifier": "http://mpeg.org/obligation8",
+          "metadata": {
+            "rdfs:label": "Record label must pay 50% to artist/band"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/DigitalSale",
+          "act": "http://mpeg.org/pay6",
+          "actedBySubject": "http://mpeg.org/RecordLabel"
+        },
+        "http://mpeg.org/obligation2": {
+          "class": "Obligation",
+          "type": "Obligation",
+          "identifier": "http://mpeg.org/obligation2",
+          "metadata": {
+            "rdfs:label": "Artist to provide a song to record label"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/RecordLabel",
+          "act": "http://mpeg.org/action3",
+          "actedBySubject": "http://mpeg.org/ArtistBand",
+          "actObjects": [
+            "http://mpeg.org/Song"
+          ]
+        },
+        "http://mpeg.org/permission1": {
+          "class": "MCOPermission",
+          "type": "MCOPermission",
+          "identifier": "http://mpeg.org/permission1",
+          "metadata": {
+            "rdfs:label": "Consumer can play a song"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/DigitalSale",
+          "act": "http://mpeg.org/action1",
+          "actedBySubject": "http://mpeg.org/Consumer",
+          "actObjects": [
+            "http://mpeg.org/Song"
+          ]
+        },
+        "http://mpeg.org/permission2": {
+          "class": "MCOPermission",
+          "type": "MCOPermission",
+          "identifier": "http://mpeg.org/permission2",
+          "metadata": {
+            "rdfs:label": "Record label authorises digital sale to sell a song"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/RecordLabel",
+          "act": "http://mpeg.org/action2",
+          "actedBySubject": "http://mpeg.org/DigitalSale",
+          "actObjects": [
+            "http://mpeg.org/Song"
+          ]
+        },
+        "http://mpeg.org/permission3": {
+          "class": "MCOPermission",
+          "type": "MCOPermission",
+          "identifier": "http://mpeg.org/permission3",
+          "metadata": {
+            "rdfs:label": "Publisher authorises the digital sale"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/Publisher",
+          "act": "http://mpeg.org/action2",
+          "actedBySubject": "http://mpeg.org/DigitalSale",
+          "actObjects": [
+            "http://mpeg.org/Song"
+          ]
+        },
+        "http://mpeg.org/obligation1": {
+          "class": "Obligation",
+          "type": "Obligation",
+          "identifier": "http://mpeg.org/obligation1",
+          "metadata": {
+            "rdfs:label": "Record label provide a song to digital sale"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/Publisher",
+          "act": "http://mpeg.org/action5",
+          "actedBySubject": "http://mpeg.org/RecordLabel",
+          "actObjects": [
+            "http://mpeg.org/Song"
+          ]
+        },
+        "http://mpeg.org/obligation7": {
+          "class": "Obligation",
+          "type": "Obligation",
+          "identifier": "http://mpeg.org/obligation7",
+          "metadata": {
+            "rdfs:label": "Publisher pays songwriters"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/RecordLabel",
+          "act": "http://mpeg.org/pay7",
+          "actedBySubject": "http://mpeg.org/Publisher"
+        },
+        "http://mpeg.org/permission4": {
+          "class": "MCOPermission",
+          "type": "MCOPermission",
+          "identifier": "http://mpeg.org/permission4",
+          "metadata": {
+            "rdfs:label": "Artist/Band authorises record label to distribute"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/ArtistBand",
+          "act": "http://mpeg.org/action4",
+          "actedBySubject": "http://mpeg.org/RecordLabel",
+          "actObjects": [
+            "http://mpeg.org/Song"
+          ]
+        },
+        "http://mpeg.org/obligation4": {
+          "class": "Obligation",
+          "type": "Obligation",
+          "identifier": "http://mpeg.org/obligation4",
+          "metadata": {
+            "rdfs:label": "Rercord label pays 9 USD cents to publisher"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/RecordLabel",
+          "act": "http://mpeg.org/pay2",
+          "actedBySubject": "http://mpeg.org/RecordLabel"
+        },
+        "http://mpeg.org/obligation5": {
+          "class": "Obligation",
+          "type": "Obligation",
+          "identifier": "http://mpeg.org/obligation5",
+          "metadata": {
+            "rdfs:label": "Record Label pays 1% to Musicians"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/RecordLabel",
+          "act": "http://mpeg.org/pay3",
+          "actedBySubject": "http://mpeg.org/RecordLabel"
+        },
+        "http://mpeg.org/obligation6": {
+          "class": "Obligation",
+          "type": "Obligation",
+          "identifier": "http://mpeg.org/obligation6",
+          "metadata": {
+            "rdfs:label": "Digital sale must pay to Record Label"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/DigitalSale",
+          "act": "http://mpeg.org/pay4",
+          "actedBySubject": "http://mpeg.org/DigitalSale"
+        },
+        "http://mpeg.org/obligation3": {
+          "class": "Obligation",
+          "type": "Obligation",
+          "identifier": "http://mpeg.org/obligation3",
+          "metadata": {
+            "rdfs:label": "Consumer pays a fixed rate"
+          },
+          "issuedIn": "http://mpeg.org/contract4",
+          "issuer": "http://mpeg.org/Consumer",
+          "act": "http://mpeg.org/pay1",
+          "actedBySubject": "http://mpeg.org/Consumer"
+        }
+      },
+      "actions": {
+        "http://mpeg.org/pay6": {
+          "class": "Payment",
+          "type": "Payment",
+          "identifier": "http://mpeg.org/pay6",
+          "actedBy": "http://mpeg.org/RecordLabel",
+          "beneficiaries": [
+            "http://mpeg.org/ArtistBand"
+          ],
+          "incomePercentage": 50
+        },
+        "http://mpeg.org/action3": {
+          "class": "Provide",
+          "type": "Provide",
+          "identifier": "http://mpeg.org/action3",
+          "actedBy": "http://mpeg.org/ArtistBand",
+          "actedOver": [
+            "http://mpeg.org/Song"
+          ]
+        },
+        "http://mpeg.org/action1": {
+          "class": "Play",
+          "type": "Play",
+          "identifier": "http://mpeg.org/action1",
+          "actedBy": "http://mpeg.org/Consumer",
+          "actedOver": [
+            "http://mpeg.org/Song"
+          ]
+        },
+        "http://mpeg.org/action2": {
+          "class": "Distribute",
+          "type": "Distribute",
+          "identifier": "http://mpeg.org/action2",
+          "actedBy": "http://mpeg.org/DigitalSale",
+          "actedOver": [
+            "http://mpeg.org/Song"
+          ]
+        },
+        "http://mpeg.org/action5": {
+          "class": "Provide",
+          "type": "Provide",
+          "identifier": "http://mpeg.org/action5",
+          "actedBy": "http://mpeg.org/RecordLabel",
+          "actedOver": [
+            "http://mpeg.org/Song"
+          ]
+        },
+        "http://mpeg.org/pay7": {
+          "class": "Payment",
+          "type": "Payment",
+          "identifier": "http://mpeg.org/pay7",
+          "actedBy": "http://mpeg.org/Publisher",
+          "amount": 2,
+          "beneficiaries": [
+            "http://mpeg.org/SongWriter"
+          ]
+        },
+        "http://mpeg.org/action4": {
+          "class": "Distribute",
+          "type": "Distribute",
+          "identifier": "http://mpeg.org/action4",
+          "actedBy": "http://mpeg.org/RecordLabel",
+          "actedOver": [
+            "http://mpeg.org/Song"
+          ]
+        },
+        "http://mpeg.org/pay2": {
+          "class": "Payment",
+          "type": "Payment",
+          "identifier": "http://mpeg.org/pay2",
+          "actedBy": "http://mpeg.org/RecordLabel",
+          "amount": 9,
+          "beneficiaries": [
+            "http://mpeg.org/Publisher"
+          ]
+        },
+        "http://mpeg.org/pay3": {
+          "class": "Payment",
+          "type": "Payment",
+          "identifier": "http://mpeg.org/pay3",
+          "actedBy": "http://mpeg.org/RecordLabel",
+          "beneficiaries": [
+            "http://mpeg.org/Musicians"
+          ],
+          "incomePercentage": 1
+        },
+        "http://mpeg.org/pay4": {
+          "class": "Payment",
+          "type": "Payment",
+          "identifier": "http://mpeg.org/pay4",
+          "actedBy": "http://mpeg.org/DigitalSale",
+          "beneficiaries": [
+            "http://mpeg.org/RecordLabel"
+          ],
+          "incomePercentage": 50
+        },
+        "http://mpeg.org/pay1": {
+          "class": "Payment",
+          "type": "Payment",
+          "identifier": "http://mpeg.org/pay1",
+          "actedBy": "http://mpeg.org/Consumer",
+          "amount": 1,
+          "beneficiaries": [
+            "http://mpeg.org/DigitalSale"
+          ]
+        }
+      },
+      "objects": {
+        "http://mpeg.org/Song": {
+          "class": "Work",
+          "type": "Work",
+          "identifier": "http://mpeg.org/Song",
+          "metadata": {
+            "rdfs:label": "SONG"
+          }
+        }
+      }
+    }
+  ]
+}

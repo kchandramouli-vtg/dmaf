@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMAF — Decentralised Media Application Framework</title>
+<link rel="stylesheet" href="css/dmaf.css">
+</head>
+<body>
+
+<header>
+  <a class="brand" href="#/library">
+    <span class="mark">DM<br>AF</span>
+    <span><b>DMAF</b><small>Decentralised Media Application Framework</small></span>
+  </a>
+  <nav id="topnav">
+    <a href="#/discover" data-nav="discover">Discover</a>
+    <!-- shown once you're signed in (js/app.js · applyNav) -->
+    <a href="#/library" data-nav="library" hidden>My Library</a>
+    <a href="#/studio" data-nav="studio" hidden>Studio</a>
+    <a href="#/publish" data-nav="publish" hidden>Publish</a>
+    <a href="#/royalties" data-nav="royalties" hidden>Royalties</a>
+    <a href="#/login" data-nav="login" id="authlink">Sign in</a>
+    <span class="wallet-chip" id="walletchip" hidden>0x7099…79C8</span>
+    <button class="wallet-chip mm" id="mm-btn" type="button">Connect MetaMask</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ================= LOGIN / REGISTER ================= -->
+  <section class="view" id="view-login">
+    <h1>Welcome to DMAF</h1>
+    <p class="lede">Publish interactive multi-track music, choose the smart contract that governs its reuse, and get paid automatically — on any app built on the ecosystem.</p>
+    <p class="pochint gate" id="auth-next" hidden></p>
+    <p class="pochint" id="auth-mode" hidden></p>
+    <div class="grid2" style="align-items:start" id="auth-forms">
+      <div class="card">
+        <h2>Sign in</h2>
+        <div class="field"><label for="li-email">Email</label><input id="li-email" type="email" autocomplete="email"></div>
+        <div class="field"><label for="li-pw">Password</label><input id="li-pw" type="password" autocomplete="current-password"></div>
+        <button class="btn primary" id="btn-login" style="width:100%">Sign in</button>
+        <div class="ordiv"><span>or</span></div>
+        <button class="btn secondary" id="btn-siwe" style="width:100%">Sign in with MetaMask</button>
+        <p class="help" style="margin-top:.5rem">MetaMask asks you to sign a short message — that proves you own the wallet. It isn't a transaction and costs no gas. The first time, it creates an account for the wallet.</p>
+      </div>
+      <div class="card">
+        <h2>Create an account</h2>
+        <div class="grid2">
+          <div class="field"><label for="rg-fn">First name</label><input id="rg-fn" type="text" autocomplete="given-name"></div>
+          <div class="field"><label for="rg-ln">Last name</label><input id="rg-ln" type="text" autocomplete="family-name"></div>
+        </div>
+        <div class="field"><label for="rg-artist">Artist name</label><input id="rg-artist" type="text" placeholder="How you appear to listeners"></div>
+        <div class="field"><label for="rg-email">Email</label><input id="rg-email" type="email" autocomplete="email"></div>
+        <div class="field"><label for="rg-pw">Password</label><input id="rg-pw" type="password" autocomplete="new-password" minlength="8">
+          <p class="help">At least 8 characters.</p></div>
+        <div class="field" id="rg-link-row"><label style="font-weight:400"><input type="checkbox" id="rg-link" checked style="width:auto;margin-right:.5rem">Link my MetaMask wallet now — royalties are paid to it (you'll sign a message, no gas)</label></div>
+        <button class="btn secondary" id="btn-register" style="width:100%">Create account</button>
+      </div>
+    </div>
+    <div class="card" id="account-card" hidden>
+      <h2>Your account</h2>
+      <dl class="summary" id="account-details"></dl>
+      <div class="grid2" style="margin-top:1.2rem;align-items:end">
+        <div class="field" style="margin:0"><label for="acc-artist">Artist name</label><input id="acc-artist" type="text" placeholder="How you appear to listeners"></div>
+        <div><button class="btn secondary" id="acc-save">Save</button></div>
+      </div>
+      <div class="actions">
+        <div class="rowbtns">
+          <button class="btn secondary" id="acc-link">Link my MetaMask wallet</button>
+          <button class="btn secondary" id="acc-unlink" hidden>Unlink wallet</button>
+        </div>
+        <div class="rowbtns">
+          <a class="btn primary" href="#/library">My Library</a>
+          <button class="btn secondary" id="acc-signout">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MY LIBRARY ================= -->
+  <section class="view" id="view-library">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <div><h1>My Library</h1><p class="lede" style="margin-bottom:0">What you've published on-chain from the connected wallet, the files you've put on IPFS, and your agreements.</p></div>
+      <a class="btn primary" href="#/studio">＋ New agreement</a>
+    </div>
+    <div class="sechead" style="margin-top:1.4rem"><h2>Published <span class="pill dlt">DLT</span> <span class="pill ipfsp">IPFS</span></h2>
+      <span class="help" id="library-note"></span></div>
+    <div class="grid3" id="library-grid"></div>
+    <div class="sechead" style="margin-top:2rem"><h2>IPFS files <span class="pill ipfsp">IPFS</span></h2>
+      <span class="help" id="ipfs-note"></span></div>
+    <div id="ipfs-lib"></div>
+    <h2 style="margin-top:2rem">Agreements</h2>
+    <div id="library-agreements"></div>
+  </section>
+
+  <!-- ================= DISCOVER ================= -->
+  <section class="view" id="view-discover">
+    <h1>Discover</h1>
+    <p class="lede">Music published on-chain. Pay per play through MetaMask — the agreement's parties are paid in the same transaction.</p>
+    <div class="sechead"><h2>On-chain <span class="pill dlt">DLT</span> <span class="pill ipfsp">IPFS</span></h2>
+      <span class="help" id="chain-note"></span></div>
+    <p class="help" style="margin:-.5rem 0 1rem">Registered in the DmafMediaRegistry contract, audio served from IPFS. Every play is paid through MetaMask and split between the agreement's parties.</p>
+    <div class="grid3" id="chain-grid"></div>
+  </section>
+
+  <!-- ================= STUDIO (agreement → publish wizard) ================= -->
+  <section class="view" id="view-studio">
+    <h1>Studio</h1>
+    <p class="lede">Agree the deal first, then make the music. Create a rights agreement between everyone involved, deliver the stems it calls for, package them and publish to the chain.</p>
+
+    <div class="stepper five" id="studio-stepper">
+      <button class="stp current" data-step="1"><span class="n">1</span><span><span class="t">Agreement</span></span></button>
+      <button class="stp" data-step="2" disabled><span class="n">2</span><span><span class="t">Stems</span></span></button>
+      <button class="stp" data-step="3" disabled><span class="n">3</span><span><span class="t">Package</span></span></button>
+      <button class="stp" data-step="4" disabled><span class="n">4</span><span><span class="t">Reuse licence</span></span></button>
+      <button class="stp" data-step="5" disabled><span class="n">5</span><span><span class="t">Publish</span></span></button>
+    </div>
+
+    <!-- Step 1 · agreement (MPEG-21 MCO) -->
+    <div class="wstep" id="wstep-1">
+      <div class="segmented" role="tablist" aria-label="Agreement mode">
+        <button role="tab" class="seg active" data-mode="new" aria-selected="true">New agreement</button>
+        <button role="tab" class="seg" data-mode="existing" aria-selected="false">My agreements <span class="count" id="ag-count">0</span></button>
+      </div>
+
+      <!-- existing agreements -->
+      <div id="ag-existing" hidden>
+        <div class="card importcard">
+          <h2 style="font-size:1rem;margin-bottom:.3rem">Import from the chain <span class="pill dlt">ISO/IEC 21000-23</span></h2>
+          <p class="help" style="margin-bottom:.6rem">Paste the address of a Smart Contract for Media. DMAF reads the contract, its NFTs and their IPFS content (backward conversion, <span class="mono">POST /api/dlt/eth/parse/</span>) and turns it back into an agreement.</p>
+          <div class="importrow"><input id="ag-import-addr" class="mono" placeholder="0x…" aria-label="Smart Contract for Media address">
+            <button class="btn secondary sm" id="ag-import-btn">Import</button></div>
+        </div>
+        <div id="ag-list"></div>
+      </div>
+
+      <!-- new / edit agreement -->
+      <div id="ag-editor">
+        <div class="card">
+          <h2><span class="secno">1</span>Choose a use case <span class="pill mco">MPEG-21 MCO</span></h2>
+          <p class="help" style="margin:-.4rem 0 1rem">Each template pre-fills the parties, permissions and payment obligations for a common deal. Everything is editable below.</p>
+          <div class="usecase-grid" id="uc-grid" role="radiogroup" aria-label="Use case templates"></div>
+        </div>
+
+        <div id="ag-body" hidden>
+          <div class="card">
+            <h2><span class="secno">2</span>Agreement details</h2>
+            <div class="grid2">
+              <div class="field"><label for="ag-title">Agreement name</label><input id="ag-title" type="text"></div>
+              <div class="field"><label for="ag-work">Work title</label><input id="ag-work" type="text" placeholder="e.g. Midnight Garden"></div>
+            </div>
+            <div class="grid4">
+              <div class="field"><label for="ag-worktype">Work type</label>
+                <select id="ag-worktype"><option>Single</option><option>EP</option><option>Album</option></select></div>
+              <div class="field"><label for="ag-tracks">Tracks</label><input id="ag-tracks" type="number" min="1" value="1"></div>
+              <div class="field"><label for="ag-due">Delivery deadline</label><input id="ag-due" type="date"></div>
+              <div class="field"><label for="ag-territory">Territory</label>
+                <select id="ag-territory"><option>Worldwide</option><option>Europe</option><option>United Kingdom</option><option>North America</option></select></div>
+            </div>
+            <div class="grid2">
+              <div class="field"><label for="ag-genre">Genre</label>
+                <select id="ag-genre"><option>Electronic</option><option>Hip-Hop</option><option>Classical</option><option>Rock</option><option>Jazz</option><option>Pop</option></select></div>
+              <div class="field"><label for="ag-term">Term</label>
+                <select id="ag-term"><option>Perpetual</option><option>5 years</option><option>3 years</option><option>1 year</option></select></div>
+            </div>
+            <p class="help mono" id="ag-basedon"></p>
+          </div>
+
+          <div class="card">
+            <h2><span class="secno">3</span>Parties</h2>
+            <p class="help" style="margin:-.4rem 0 .8rem">Every party named in the contract. Wallets receive payments; everyone except the consumer signs.</p>
+            <div class="tablewrap"><table class="edtable" id="tb-parties">
+              <thead><tr><th>Role</th><th>MVCO role</th><th>Name</th><th>Wallet</th><th>Email</th><th></th></tr></thead>
+              <tbody></tbody></table></div>
+            <button class="btn secondary sm addrow" data-add="party">＋ Add party</button>
+            <button class="btn secondary sm addrow" id="ag-hh-wallets" title="Fills empty wallets with Hardhat test accounts #3 onwards, and empty names with placeholder organisations">Fill test wallets &amp; names</button>
+          </div>
+
+          <div class="card">
+            <h2><span class="secno">4</span>Permissions</h2>
+            <p class="help" style="margin:-.4rem 0 .8rem">Who authorises whom to do what with the work.</p>
+            <div class="tablewrap"><table class="edtable" id="tb-perms">
+              <thead><tr><th>Issued by</th><th>permits</th><th>to</th><th>over</th><th>Description</th><th></th></tr></thead>
+              <tbody></tbody></table></div>
+            <button class="btn secondary sm addrow" data-add="perm">＋ Add permission</button>
+          </div>
+
+          <div class="card">
+            <h2><span class="secno">5</span>Obligations</h2>
+            <h3 class="subh">Provide material</h3>
+            <div class="tablewrap"><table class="edtable" id="tb-provide">
+              <thead><tr><th>Issued by</th><th>Obliged party</th><th>provides</th><th>to</th><th>Description</th><th></th></tr></thead>
+              <tbody></tbody></table></div>
+            <button class="btn secondary sm addrow" data-add="provide">＋ Add obligation</button>
+
+            <h3 class="subh" style="margin-top:1.4rem">Payments</h3>
+            <div class="tablewrap"><table class="edtable" id="tb-pay">
+              <thead><tr><th>Issued by</th><th>Payer</th><th>pays</th><th>Basis</th><th>Value</th><th>Unit</th><th>Description</th><th></th></tr></thead>
+              <tbody></tbody></table></div>
+            <button class="btn secondary sm addrow" data-add="pay">＋ Add payment</button>
+
+            <div class="flow" id="rev-flow"></div>
+          </div>
+
+          <div class="card">
+            <h2><span class="secno">6</span>Deliverables <span class="pill imaf">stems for IMAF</span></h2>
+            <p class="help" style="margin:-.4rem 0 .8rem">The stems each party must deliver once the music is made. The Stems step checks uploads against this list.</p>
+            <div class="chips" id="dl-quick"></div>
+            <div class="tablewrap"><table class="edtable" id="tb-deliv">
+              <thead><tr><th>Stem</th><th>Group</th><th>Delivered by</th><th>Delivered to</th><th>Format</th><th>Required</th><th></th></tr></thead>
+              <tbody></tbody></table></div>
+            <button class="btn secondary sm addrow" data-add="deliv">＋ Add stem</button>
+          </div>
+
+          <div class="card">
+            <h2><span class="secno">7</span>Review, sign &amp; register</h2>
+            <ul class="checks" id="ag-checks"></ul>
+            <details class="jsonld">
+              <summary>MPEG-21 MCO contract (JSON-LD)</summary>
+              <pre id="ag-json" class="mono"></pre>
+            </details>
+            <div class="sigs" id="ag-sigs"></div>
+            <div class="chainbox" id="ag-chain" hidden>
+              <h3 id="ag-chain-title">Agreement registration</h3>
+              <div id="ag-chain-rows"></div>
+            </div>
+            <div class="actions">
+              <span style="display:flex;gap:.6rem;flex-wrap:wrap">
+                <button class="btn secondary" id="ag-save">Save draft</button>
+                <button class="btn secondary" id="ag-download" title="MPEG-21 MCO, flat JSON-LD profile (what the ISO/IEC 21000-23 parser reads)">Download JSON-LD</button>
+                <button class="btn secondary" id="ag-download-ttl" title="MCO Turtle from GET /api/generator/mco/{id}">Turtle</button>
+                <button class="btn secondary" id="ag-download-cel" title="MPEG-21 CEL XML from GET /api/generator/cel/{id}">CEL XML</button>
+              </span>
+              <span style="display:flex;gap:.6rem;flex-wrap:wrap">
+                <button class="btn secondary" id="ag-sign">Send for signature</button>
+                <button class="btn primary" id="ag-register" disabled>Register agreement on-chain</button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card later" id="ag-next" hidden>
+        <div>
+          <h2 style="margin-bottom:.2rem">Agreement active — go make the music</h2>
+          <p id="ag-next-msg">Come back to Studio → My agreements when the stems are ready.</p>
+        </div>
+        <span style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <a class="btn primary" id="ag-to-publish" href="#/publish">Publish MP3 · IPFS + chain</a>
+          <button class="btn secondary" id="to-w2">Deliver stems (IMAF)</button>
+        </span>
+      </div>
+    </div>
+
+    <!-- Step 2 · stems (checked against the agreement's deliverables) -->
+    <div class="wstep" id="wstep-2" hidden>
+      <div class="card">
+        <div class="agbanner" id="stem-agbanner"></div>
+        <h2>Deliver your stems</h2>
+        <p class="pochint">Releasing one finished MP3 rather than separate stems? Use <a id="stem-to-publish" href="#/publish">Publish</a> instead — it puts the MP3 on IPFS and registers it on-chain under this agreement. This step is for multitrack stems: they're uploaded to the dev server, mixed into an MP3 with ffmpeg at the levels below, and packaged as an IMAF file (ISO/IEC 23000-12) — both go on IPFS and the mix is published pay-per-play.</p>
+        <div class="dropzone" id="stem-drop" role="button" tabindex="0" aria-label="Add audio stems">
+          <strong>Drop audio stems here, or click to add</strong>
+          <span>Files are matched to the agreement's deliverables by name · WAV, FLAC or MP3 · up to 200 MB total</span>
+        </div>
+        <input type="file" id="stem-file" accept="audio/*,.wav,.flac,.mp3" multiple hidden>
+        <input type="file" id="stem-file-one" accept="audio/*,.wav,.flac,.mp3" hidden>
+        <table class="stemtable" id="stem-table">
+          <thead><tr><th>Deliverable</th><th>Delivered by</th><th>File</th><th>Group</th><th>Default level</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="help" id="stem-progress" style="margin-top:.6rem"></p>
+        <div class="grid2" style="margin-top:1.2rem">
+          <div class="field"><label for="pk-title">Package title</label><input id="pk-title" type="text" value="Midnight Garden"></div>
+          <div class="field"><label for="pk-genre">Genre</label>
+            <select id="pk-genre"><option>Electronic</option><option>Hip-Hop</option><option>Classical</option><option>Rock</option><option>Jazz</option><option>Pop</option></select></div>
+        </div>
+        <div class="actions">
+          <button class="btn secondary" data-back="1">Back</button>
+          <button class="btn primary" id="to-w3" disabled>Continue to packaging</button></div>
+      </div>
+    </div>
+
+    <!-- Step 3 · package (IMAF/DASH) -->
+    <div class="wstep" id="wstep-3" hidden>
+      <div class="card">
+        <h2>Interactivity & formats <span class="pill imaf">ISO/IEC 23000-12 · IMAF</span> <span class="pill dash">ISO/IEC 23009-1 · DASH</span></h2>
+        <p class="help" style="margin-bottom:1rem">These settings are written into the IMAF container as presets and rules, so any compliant player app reproduces them.</p>
+        <div class="grid2">
+          <div>
+            <label>Preset mixes included</label>
+            <div style="display:grid;gap:.45rem;margin-top:.4rem">
+              <label style="font-weight:400"><input type="checkbox" data-preset="producer" checked disabled style="width:auto;margin-right:.5rem">Producer mix — all stems at default levels (always included; the default)</label>
+              <label style="font-weight:400"><input type="checkbox" data-preset="karaoke" checked style="width:auto;margin-right:.5rem">Karaoke — lead vocals muted</label>
+              <label style="font-weight:400"><input type="checkbox" data-preset="acappella" style="width:auto;margin-right:.5rem">A-cappella — vocals group only</label>
+              <label style="font-weight:400"><input type="checkbox" data-preset="rhythm" style="width:auto;margin-right:.5rem">Rhythm section — drums, bass, guitars</label>
+            </div>
+          </div>
+          <div>
+            <div class="field"><label for="rule-limits">Listener control rule</label>
+              <select id="rule-limits">
+                <option value="free">Free mixing — any stem, any level</option>
+                <option value="presets">Preset switching only</option>
+                <option value="limit6db">Volume within ±6 dB of defaults</option>
+              </select>
+              <p class="help">IMAF rules constrain how far listeners can deviate from your mix.</p></div>
+            <div class="field"><label for="dash-profiles">DASH streaming renditions</label>
+              <select id="dash-profiles" disabled>
+                <option>Not generated yet — plays stream the MP3 mix from IPFS</option>
+              </select>
+              <p class="help">DASH renditions aren't part of this proof of concept yet.</p></div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn secondary" data-back="2">Back</button>
+          <button class="btn primary" id="to-w4">Continue to reuse licence</button></div>
+      </div>
+    </div>
+
+    <!-- Step 4 · reuse licence -->
+    <div class="wstep" id="wstep-4" hidden>
+      <p class="help" style="margin:-.6rem 0 1rem">How <em>other creators</em> may sample or remix the published package. Revenue between the parties is already governed by the agreement from step 1.</p>
+      <div id="contract-list" role="radiogroup" aria-label="Reuse licence options"></div>
+      <div class="actions">
+        <button class="btn secondary" data-back="3">Back</button>
+        <button class="btn primary" id="to-w5" disabled>Review &amp; publish</button></div>
+    </div>
+
+    <!-- Step 5 · publish -->
+    <div class="wstep" id="wstep-5" hidden>
+      <div class="card">
+        <h2>Review, package and publish</h2>
+        <dl class="summary">
+          <div><dt>Package</dt><dd id="sum-title">—</dd></div>
+          <div><dt>Stems</dt><dd id="sum-stems">—</dd></div>
+          <div><dt>Agreement</dt><dd id="sum-agreement">—</dd></div>
+          <div><dt>Parties</dt><dd id="sum-parties">—</dd></div>
+          <div><dt>Formats</dt><dd><span class="pill imaf">IMAF</span> <span class="pill ipfsp">MP3 mix</span> <span class="pill dlt">DLT</span></dd></div>
+          <div><dt>Presets · listener rule</dt><dd id="sum-presets">—</dd></div>
+          <div><dt>Reuse licence</dt><dd id="sum-contract">—</dd></div>
+          <div><dt>Payout wallet</dt><dd class="mono" id="sum-wallet">—</dd></div>
+          <div><dt>Container fingerprint</dt><dd class="mono" id="sum-fingerprint">sha256 of the IMAF file — after packaging</dd></div>
+        </dl>
+        <div class="chainbox" id="chainbox">
+          <h3 id="chain-title">Package with ffmpeg</h3>
+          <div id="pkg-rows"><p class="help">Mixes the stems into a 320 kbps MP3 at their default levels (ffmpeg) and packages them as one IMAF file — an AAC track per stem, with the groups, presets and rule above; MP4Box muxes it when installed. Also computes the waveforms for the asset page's stem visualiser, then pins everything to your IPFS node. Runs on the dev server.</p></div>
+        </div>
+        <div class="actions">
+          <button class="btn secondary" data-back="4">Back</button>
+          <button class="btn secondary" id="btn-package">Build mix + IMAF package</button>
+          <a class="btn primary" id="btn-publish" href="#/publish" aria-disabled="true">Publish the mix on-chain →</a></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================= PUBLISH (IPFS + local chain via MetaMask) ================= -->
+  <section class="view" id="view-publish">
+    <h1>Publish an MP3</h1>
+    <p class="lede">Put the audio on IPFS, pin its MPEG-21 MCO agreement next to it, and register both in the DmafMediaRegistry contract through MetaMask. The agreement runs on-chain as an ISO/IEC 21000-23 Smart Contract for Media: every paid play goes through its <span class="mono">Contract.payTo</span>, which pays each party its income percentage in the same transaction. Agreements payTo can't settle (parties sharing a wallet, contract wallets, fractional percents) use the registry's direct split instead: it pays each wallet its share itself, in the same transaction.</p>
+
+    <div class="card">
+      <h2><span class="secno">1</span>Wallet, chain &amp; IPFS</h2>
+      <div class="svc" id="pub-svc"><p class="help">Checking…</p></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="secno">2</span>Agreement <span class="pill mco">MPEG-21 MCO</span></h2>
+      <div class="field" style="max-width:40rem"><label for="pub-ag">Revenue split comes from</label>
+        <select id="pub-ag"></select>
+        <p class="help">Active agreements only. <a href="#/studio">Create and register one in the Studio</a>. With the Smart Contract for Media settlement, an agreement that isn't on this chain yet is deployed during publishing (one extra MetaMask confirmation); the direct split needs one confirmation.</p></div>
+      <div id="pub-splits"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="secno">3</span>Track</h2>
+      <div class="pochint" id="pub-pkg" hidden></div>
+      <div class="dropzone" id="pub-drop" role="button" tabindex="0" aria-label="Choose an MP3">
+        <strong>Drop an MP3 here, or click to choose</strong>
+        <span>Stored on your local IPFS node · try <span class="mono">samples/night-signals-demo.mp3</span></span>
+      </div>
+      <input type="file" id="pub-file" accept="audio/mpeg,.mp3" hidden>
+      <div class="fileinfo" id="pub-fileinfo" hidden></div>
+      <div class="grid2">
+        <div class="field"><label for="pub-title">Title</label><input id="pub-title" type="text"></div>
+        <div class="field"><label for="pub-artist">Artist</label><input id="pub-artist" type="text" value="KS Audio"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="pub-genre">Genre</label>
+          <select id="pub-genre"><option>Electronic</option><option>Hip-Hop</option><option>Classical</option><option>Rock</option><option>Jazz</option><option>Pop</option></select></div>
+        <div class="field"><label for="pub-price">Price per play (ETH)</label><input id="pub-price" type="number" min="0" step="0.0001" value="0.001" class="mono">
+          <p class="help">Paid by the listener on every play and split per the agreement.</p></div>
+      </div>
+      <div class="field"><label for="pub-desc">Description</label><textarea id="pub-desc" rows="2" placeholder="Optional — stored in the metadata JSON on IPFS"></textarea></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="secno">4</span>Publish</h2>
+      <ol class="steps" id="pub-steps"></ol>
+      <div class="chainbox confirmed" id="pub-done" hidden></div>
+      <div class="actions">
+        <span class="help" id="pub-hint"></span>
+        <button class="btn primary" id="pub-go" disabled>Publish to IPFS + chain</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ASSET (pay-per-play) ================= -->
+  <section class="view" id="view-asset">
+    <p style="margin-bottom:.4rem"><a href="#/discover" class="backlink">← Discover</a></p>
+    <h1 id="as-title">Asset</h1>
+    <p class="lede" id="as-sub"></p>
+    <div class="asset-grid">
+      <div class="card">
+        <h2>Listen</h2>
+        <div class="paybox">
+          <div><div class="big" id="as-price">—</div><div class="help">per play · paid with MetaMask</div></div>
+          <div class="help" id="as-plays"></div>
+        </div>
+        <button class="btn primary" id="as-pay" style="width:100%">Pay &amp; play</button>
+        <div class="nowplaying" id="as-player" hidden>
+          <audio id="as-audio" controls preload="auto"></audio>
+          <p class="help" id="as-player-note"></p>
+        </div>
+        <div class="chainbox" id="as-chain" hidden>
+          <h3 id="as-chain-title"></h3>
+          <div class="chainrow"><span>Transaction</span><span class="mono" id="as-tx">—</span></div>
+          <div class="chainrow"><span>Block · gas</span><span id="as-block">—</span></div>
+          <div class="chainrow"><span>Play number</span><span id="as-playno">—</span></div>
+          <div id="as-payouts"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Revenue split <span class="pill mco">MCO</span></h2>
+        <p class="help" style="margin:-.4rem 0 .6rem" id="as-split-note"></p>
+        <div class="tablewrap"><table class="table" id="as-split"></table></div>
+      </div>
+    </div>
+    <div class="card" id="as-stems-card" hidden>
+      <div class="sechead"><h2>Stems <span class="pill imaf">IMAF</span></h2><span class="help" id="as-stems-note"></span></div>
+      <div id="as-stems"></div>
+    </div>
+    <div class="card">
+      <h2>IPFS &amp; contract</h2>
+      <dl class="summary" id="as-refs"></dl>
+    </div>
+    <div class="card">
+      <h2>Access log <span class="pill dlt">on-chain</span></h2>
+      <div class="tablewrap"><table class="table" id="as-log"></table></div>
+    </div>
+  </section>
+
+  <!-- ================= PLAYER ================= -->
+  <section class="view" id="view-player">
+    <h1 id="pl-title">Player</h1>
+    <p class="lede" id="pl-sub">Interactive multi-track playback. Every mix change stays within the rules the creator packaged into the IMAF container.</p>
+    <div class="card">
+      <div class="player-head">
+        <div class="transport">
+          <button class="btn primary" id="pl-play">► Play</button>
+          <button class="btn secondary" id="pl-stop">■ Stop</button>
+        </div>
+        <div class="presets" id="pl-presets"></div>
+      </div>
+      <div id="pl-stems"></div>
+      <p class="help" style="margin-top:1rem">Streaming via <span class="pill dash">DASH</span> · stems &amp; presets from the <span class="pill imaf">IMAF</span> container · reuse events settle on <span class="pill dlt">DLT</span></p>
+    </div>
+    <div class="actions"><a class="btn secondary" href="#/discover">Back to Discover</a><span></span></div>
+  </section>
+
+  <!-- ================= ROYALTIES ================= -->
+  <section class="view" id="view-royalties">
+    <h1>Royalties</h1>
+    <p class="lede">Everything your contracts collected and paid, mirrored from the chain.</p>
+    <div class="card" id="live-royalties" style="margin-bottom:1.6rem"></div>
+    <h2>Demo data</h2>
+    <div class="grid3" id="royalty-stats"></div>
+    <div class="card" style="margin-top:1.3rem">
+      <h2>On-chain events</h2>
+      <table class="table"><thead>
+        <tr><th>Date</th><th>Event</th><th>Counterparty</th><th>Amount</th><th>Tx</th></tr>
+      </thead><tbody id="royalty-rows"></tbody></table>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot">
+    <div>
+      <p>© <span id="year"></span> DMAF — Decentralised Media Rights Ecosystem</p>
+      <p style="color:#94a3b8;font-size:.78rem" id="mocknote"></p>
+    </div>
+    <div class="engines" aria-label="Ecosystem engines">
+      <span class="engine imaf"><i></i>IMAF Engine</span>
+      <span class="engine dash"><i></i>DASH Engine</span>
+      <span class="engine dlt"><i></i>DLT Engine</span>
+      <span class="engine ipfs" id="eng-ipfs"><i></i>IPFS</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+<script src="js/mco-templates.js"></script>
+<script src="js/vendor/ethers.umd.min.js"></script>
+<script src="js/chain-config.js"></script>
+<script src="js/web3.js"></script>
+<script src="js/scm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script src="js/account.js"></script>
+<script src="js/agreement.js"></script>
+<script src="js/stemviz.js"></script>
+<script src="js/media.js"></script>
+<script src="js/library.js"></script>
+</body>
+</html>

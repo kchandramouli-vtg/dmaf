@@ -1,0 +1,2786 @@
+openapi: 3.0.1
+info:
+  title: MPEG-21 Smart Contracts for Media OpenAPI
+  description:
+    <b>Context:</b> This API definition is derived from the Smart Contracts
+    for Media DIS. <br><b>Scope:</b> This part of the standard provides the means
+    (e.g., protocols and application programming interfaces) for converting MPEG-21
+    XML and RDF media contracts (ISO/IEC 21000-19 Media Value Chain Ontology,
+    ISO/IEC 21000-19/AMD1 Extensions on Time-Segments and Multi-Track Audio, also
+    known as Audio Value Chain Ontology, ISO/IEC 21000-20 (2nd Ed) Contract
+    Expression Language and ISO/IEC 21000-21 (2nd Ed) Media Contract Ontology) to
+    smart contracts executable on existing DLT environments.
+  contact:
+    name: MPEG-21 Smart Contracts for Media
+    url: https://scm.linkeddata.es
+  version: 1.0.0
+externalDocs:
+  description: API Documentation
+  url: https://scm.linkeddata.es/docs
+servers:
+  - url: https://scm.linkeddata.es/api
+    description: Development Server
+  - url: http://localhost:8080/api
+    description: Local Server
+paths:
+  /parser/mco:
+    post:
+      tags:
+        - Parser
+      summary: Parses a MCO contract and creates a set of Media Contractual Objects
+      operationId: getContractFromMCO
+      requestBody:
+        $ref: '#/components/requestBodies/MCOReq'
+      responses:
+        '200':
+          $ref: '#/components/responses/arrayOfContracts'
+        '400':
+          $ref: '#/components/responses/parserError'
+      x-swagger-router-controller: Parser
+  /parser/cel:
+    post:
+      tags:
+        - Parser
+      summary: Parses a CEL contract and creates a set of Media Contractual Objects
+      operationId: getContractFromCEL
+      requestBody:
+        $ref: '#/components/requestBodies/CELReq'
+      responses:
+        '200':
+          $ref: '#/components/responses/arrayOfContracts'
+        '400':
+          $ref: '#/components/responses/parserError'
+      x-swagger-router-controller: Parser
+  /generator/mco/{contractIdref}:
+    get:
+      tags:
+        - Generator
+      summary: Generates a MCO contract from a set of Media Contractual Objects
+      operationId: generateMCOContract
+      parameters:
+        - $ref: '#/components/parameters/contractIdref'
+      responses:
+        '200':
+          $ref: '#/components/responses/mcoContract'
+        '400':
+          $ref: '#/components/responses/idError'
+      x-swagger-router-controller: Generator
+  /generator/cel/{contractIdref}:
+    get:
+      tags:
+        - Generator
+      summary: Generates a CEL contract from a set of Media Contractual Objects
+      operationId: generateCELContract
+      parameters:
+        - $ref: '#/components/parameters/contractIdref'
+      responses:
+        '200':
+          $ref: '#/components/responses/celContract'
+        '400':
+          $ref: '#/components/responses/idError'
+      x-swagger-router-controller: Generator
+  /dlt/generate/{contractIdref}:
+    get:
+      tags:
+        - DLT and Smart Contract Manager
+      summary:
+        Generates a Smart Contract Specification from a set of Media Contractual
+        Objects
+      operationId: generateSmartContract
+      parameters:
+        - $ref: '#/components/parameters/contractIdref'
+      responses:
+        '200':
+          $ref: '#/components/responses/mediaSmartContract'
+        '400':
+          $ref: '#/components/responses/idError'
+      x-swagger-router-controller: EthereumSmartContract
+  /dlt/eth/parse/:
+    post:
+      tags:
+        - DLT and Smart Contract Manager
+      summary:
+        Parses a Smart Contract for Media from an Ethereum address and creates
+        a set of Media Contractual Objects
+      operationId: parseSmartContract
+      requestBody:
+        $ref: '#/components/requestBodies/EthereumAddress'
+      responses:
+        '200':
+          $ref: '#/components/responses/contract'
+        '400':
+          $ref: '#/components/responses/invalidEthereumAddress'
+      x-swagger-router-controller: EthereumSmartContract
+  #/dlt/algo/deploy/{contractIdref}:
+  #  get:
+  #    tags:
+  #      - DLT and Smart Contract Manager
+  #    summary: Deploys a Smart Contract for Media from a set of Media Contractual Objects in Algorand
+  #    operationId: deploySmartContractAlgo
+  #    parameters:
+  #      - $ref: '#/components/parameters/contractIdref'
+  #    responses:
+  #      '200':
+  #        $ref: '#/components/responses/algorandSmartContractAddress'
+  #      '400':
+  #        $ref: '#/components/responses/invalidAlgorandAddress'
+  #    x-swagger-router-controller: AlgorandSmartContract
+  /dlt/algo/parse/:
+    post:
+      tags:
+        - DLT and Smart Contract Manager
+      summary:
+        Parses a Smart Contract for Media from an Algorand address and App id and
+        creates a set of Media Contractual Objects
+      operationId: parseSmartContractAlgo
+      requestBody:
+        $ref: '#/components/requestBodies/AlgorandAddress'
+      responses:
+        '200':
+          $ref: '#/components/responses/contract'
+        '400':
+          $ref: '#/components/responses/invalidAlgorandAddress'
+      x-swagger-router-controller: AlgorandSmartContract
+  /contracts/:
+    post:
+      tags:
+        - Media Contractual Objects | Contract
+      summary: Creates a contract object
+      operationId: setContract
+      requestBody:
+        $ref: '#/components/requestBodies/contract'
+      responses:
+        '200':
+          $ref: '#/components/responses/contractIdref'
+      x-swagger-router-controller: MediaContractualObjectsContract
+  /contracts/{contractIdref}:
+    get:
+      tags:
+        - Media Contractual Objects | Contract
+      summary: Returns all the data of a contract object
+      operationId: getContract
+      parameters:
+        - $ref: '#/components/parameters/contractIdref'
+      responses:
+        '200':
+          $ref: '#/components/responses/contract'
+        '400':
+          $ref: '#/components/responses/idError'
+      x-swagger-router-controller: MediaContractualObjectsContract
+  /contracts/{contractIdref}/parties/:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Party
+      summary: Returns the ids of parties of a contract object
+      operationId: getParties
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      responses:
+        '200':
+          description: an array of parties ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/partyIdref'
+                x-content-type: application/json
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsParty
+    post:
+      tags:
+        - (Not working) Media Contractual Objects | Party
+      summary: Create a party of a contract object
+      operationId: setParties
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      requestBody:
+        $ref: '#/components/requestBodies/party'
+      responses:
+        '200':
+          $ref: '#/components/schemas/partyIdref'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsParty
+  /contracts/{contractIdref}/parties/{partyIdref}:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Party
+      summary: Returns all the data of a party object
+      operationId: getPartyBy
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+        - name: partyIdref
+          in: path
+          description: Alphanumeric ID of the party to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/partyIdref'
+      responses:
+        '200':
+          description: a party object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsParty
+  /contracts/{contractIdref}/otherPersonUsers/:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Party
+      summary: Returns the ids of otherPersonUsers of a contract object
+      operationId: getOtherPersonUsers
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      responses:
+        '200':
+          description: an array of personUser ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/personUserIdref'
+                x-content-type: application/json
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsParty
+    post:
+      tags:
+        - (Not working) Media Contractual Objects | Party
+      summary: Creates an otherPersonUsers of a contract object
+      operationId: setOtherPersonUsers
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      requestBody:
+        $ref: '#/components/requestBodies/personUser'
+      responses:
+        '200':
+          $ref: '#/components/schemas/personUserIdref'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsParty
+  /contracts/{contractIdref}/otherPersonUsers/{personUserIdref}:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Party
+      summary: Returns all the data of a personUser object
+      operationId: getOtherPersonUsersBy
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+        - name: personUserIdref
+          in: path
+          description: Alphanumeric ID of the personUser to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/personUserIdref'
+      responses:
+        '200':
+          description: a cel person or mco user object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsParty
+  /contracts/{contractIdref}/deontics/:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Deontic
+      summary: Returns the ids of deontic expressions of a contract object
+      operationId: getDeontics
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      responses:
+        '200':
+          description: an array of deontic expression ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/deonticIdref'
+                x-content-type: application/json
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsDeontic
+    post:
+      tags:
+        - (Not working) Media Contractual Objects | Deontic
+      summary: Creates a deontic expressions of a contract object
+      operationId: setDeontics
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      requestBody:
+        $ref: '#/components/requestBodies/deontic'
+      responses:
+        '200':
+          $ref: '#/components/schemas/deonticIdref'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsDeontic
+  /contracts/{contractIdref}/deontics/{deonticIdref}:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Deontic
+      summary: Returns all the data of a deontic object
+      operationId: getDeonticBy
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+        - name: deonticIdref
+          in: path
+          description: Alphanumeric ID of the expression to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/deonticIdref'
+      responses:
+        '200':
+          description: a deontic expression object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsDeontic
+  /contracts/{contractIdref}/deontics/{deonticIdref}/conditions/:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Deontic
+      summary: Returns the ids of conditions of a deontic object
+      operationId: getPrePostConditions
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+        - name: deonticIdref
+          in: path
+          description: Alphanumeric ID of the expression to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/deonticIdref'
+      responses:
+        '200':
+          description: an array of condition ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/conditionIdref'
+                x-content-type: application/json
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsDeontic
+    post:
+      tags:
+        - (Not working) Media Contractual Objects | Deontic
+      summary: Creates a condition of a deontic object
+      operationId: setPrePostConditions
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+        - name: deonticIdref
+          in: path
+          description: Alphanumeric ID of the expression to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/deonticIdref'
+      requestBody:
+        $ref: '#/components/requestBodies/celCondition'
+      responses:
+        '200':
+          $ref: '#/components/schemas/conditionIdref'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsDeontic
+  /contracts/{contractIdref}/deontics/{deonticIdref}/conditions/{conditionIdref}:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Deontic
+      summary: Returns all the data of a cel condition object
+      operationId: getPrePostCondition
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+        - name: deonticIdref
+          in: path
+          description: Alphanumeric ID of the expression to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/deonticIdref'
+        - name: conditionIdref
+          in: path
+          description: Alphanumeric ID of the condition to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/conditionIdref'
+      responses:
+        '200':
+          description: a cel condition object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CELCondition'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsDeontic
+  /contracts/{contractIdref}/operativePart/:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Deontic
+      summary: Returns the ids of deontic structured blocks of a contract object
+      operationId: getOperativePart
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      responses:
+        '200':
+          description: an array of deontic structured blocks ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/deonticStructuredBlockIdref'
+                x-content-type: application/json
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsDeontic
+    post:
+      tags:
+        - (Not working) Media Contractual Objects | Deontic
+      summary: Creates a deontic structured block of a contract object
+      operationId: setOperativePart
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      requestBody:
+        description: an array of deontic expression ids
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/deonticIdref'
+      responses:
+        '200':
+          $ref: '#/components/schemas/deonticStructuredBlockIdref'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsDeontic
+  /contracts/{contractIdref}/operativePart/{deonticStructuredBlockIdref}:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Deontic
+      summary: Returns the ids of deontics of a deontic structured block object
+      operationId: getDeonticStructuredBlock
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+        - name: deonticStructuredBlockIdref
+          in: path
+          description: Alphanumeric ID of the expression block to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/deonticStructuredBlockIdref'
+      responses:
+        '200':
+          description: an array of deontic expression ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/deonticIdref'
+                x-content-type: application/json
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsDeontic
+  /contracts/{contractIdref}/actions/:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Action
+      summary: Returns the ids of actions of a contract object
+      operationId: getActions
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      responses:
+        '200':
+          description: an array of action ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/actionIdref'
+                x-content-type: application/json
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsAction
+    post:
+      tags:
+        - (Not working) Media Contractual Objects | Action
+      summary: Creates an action of a contract object
+      operationId: setActions
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      requestBody:
+        $ref: '#/components/requestBodies/action'
+      responses:
+        '200':
+          $ref: '#/components/schemas/actionIdref'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsAction
+  /contracts/{contractIdref}/actions/{actionIdref}:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Action
+      summary: Returns all the data of an action object
+      operationId: getActionBy
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+        - name: actionIdref
+          in: path
+          description: Alphanumeric ID of the action to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/actionIdref'
+      responses:
+        '200':
+          description: an action object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsAction
+  /contracts/{contractIdref}/objects/:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Object
+      summary: Returns the ids of objects of a contract object
+      operationId: getObject
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      responses:
+        '200':
+          description: an array of object ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/objectIdref'
+                x-content-type: application/json
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsObject
+    post:
+      tags:
+        - (Not working) Media Contractual Objects | Object
+      summary: Creates an object of a contract object
+      operationId: setObject
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      requestBody:
+        $ref: '#/components/requestBodies/object'
+      responses:
+        '200':
+          $ref: '#/components/schemas/objectIdref'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsObject
+  /contracts/{contractIdref}/objects/{objectIdref}:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Object
+      summary: Returns all the data of an object object
+      operationId: getObjectBy
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+        - name: objectIdref
+          in: path
+          description: Alphanumeric ID of the object to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/objectIdref'
+      responses:
+        '200':
+          description: an object object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsObject
+  /contracts/{contractIdref}/facts/:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Fact
+      summary: Returns the ids of facts of a contract object
+      operationId: getFacts
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      responses:
+        '200':
+          description: an array of fact ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/factIdref'
+                x-content-type: application/json
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsFact
+    post:
+      tags:
+        - (Not working) Media Contractual Objects | Fact
+      summary: Create a fact of a contract object
+      operationId: setFacts
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+      requestBody:
+        $ref: '#/components/requestBodies/fact'
+      responses:
+        '200':
+          $ref: '#/components/schemas/factIdref'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsFact
+  /contracts/{contractIdref}/facts/{factIdref}:
+    get:
+      tags:
+        - (Not working) Media Contractual Objects | Fact
+      summary: Returns all the data of a fact object
+      operationId: getFactBy
+      parameters:
+        - name: contractIdref
+          in: path
+          description: Alphanumeric ID of the contract to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/contractIdref'
+        - name: factIdref
+          in: path
+          description: Alphanumeric ID of the fact to get
+          required: true
+          style: simple
+          explode: false
+          schema:
+            $ref: '#/components/schemas/factIdref'
+      responses:
+        '200':
+          description: a fact object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_5'
+        '400':
+          description: id reference not found
+      x-swagger-router-controller: MediaContractualObjectsFact
+components:
+  schemas:
+    scmIdref:
+      #pattern: ^scm-\w+$
+      type: string
+    encryptedIdref:
+      #pattern: ^encr-\w+$
+      type: string
+    contractIdref:
+      #pattern: ^cont-\w+$
+      type: string
+    personUserIdref:
+      #pattern: ^user-\w+$
+      type: string
+    partyIdref:
+      oneOf:
+        - $ref: '#/components/schemas/personUserIdref'
+        - pattern: ^part-\w+$
+          type: string
+    deonticIdref:
+      #pattern: ^deon-\w+$
+      type: string
+    deonticStructuredBlockIdref:
+      #pattern: ^dsbl-\w+$
+      type: string
+    actionIdref:
+      #pattern: ^acti-\w+$
+      type: string
+    ipentityIdref:
+      #pattern: ^ipen-\w+$
+      type: string
+    itemIdref:
+      oneOf:
+        - $ref: '#/components/schemas/ipentityIdref'
+        - pattern: ^item-\w+$
+          type: string
+    trackIdref:
+      #pattern: ^trac-\w+$
+      type: string
+    intervalIdref:
+      #pattern: ^inte-\w+$
+      type: string
+    objectIdref:
+      oneOf:
+        #- $ref: '#/components/schemas/itemIdref'
+        #- $ref: '#/components/schemas/trackIdref'
+        #- $ref: '#/components/schemas/intervalIdref'
+        - #pattern: ^obje-\w+$
+          type: string
+    factIdref:
+      #pattern: ^fact-\w+$
+      type: string
+    textIdref:
+      #pattern: ^text-\w+$
+      type: string
+    conditionIdref:
+      #pattern: ^cond-\w+$
+      type: string
+    idref:
+      oneOf:
+        #- $ref: '#/components/schemas/encryptedIdref'
+        #- $ref: '#/components/schemas/contractIdref'
+        #- $ref: '#/components/schemas/partyIdref'
+        #- $ref: '#/components/schemas/personUserIdref'
+        #- $ref: '#/components/schemas/deonticIdref'
+        #- $ref: '#/components/schemas/deonticStructuredBlockIdref'
+        #- $ref: '#/components/schemas/actionIdref'
+        #- $ref: '#/components/schemas/objectIdref'
+        #- $ref: '#/components/schemas/trackIdref'
+        #- $ref: '#/components/schemas/intervalIdref'
+        #- $ref: '#/components/schemas/factIdref'
+        - #pattern: ^id-\w+$
+          type: string
+    IdentifiedThing:
+      required:
+        - identifier
+      type: object
+      properties:
+        identifier:
+          type: string
+        idRef:
+          $ref: '#/components/schemas/idref'
+    WithMetadata:
+      type: object
+      properties:
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    Encryptable:
+      type: object
+      properties:
+        encryptedRepresentation:
+          $ref: '#/components/schemas/encryptedIdref'
+    Contract:
+      allOf:
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - $ref: '#/components/schemas/Encryptable'
+        - $ref: '#/components/schemas/WithMetadata'
+        - required:
+            - actions
+            - deontics
+          type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/contractIdref'
+            governingLaw:
+              type: string
+            court:
+              type: string
+            isCourtJurisdictionExclusive:
+              type: boolean
+            textVersion:
+              type: string
+            encryptedTextVersion:
+              type: string
+            contractRelations:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/ContractRelationsEnum'
+              description: 'Map where keys are of type: #/components/schemas/contractIdref'
+            parties:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/Party'
+              description: 'Map where keys are of type: #/components/schemas/partyIdref'
+            otherPersonUsers:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/PersonUser'
+              description: 'Map where keys are of type: #/components/schemas/personUserIdref'
+            deontics:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/Deontic'
+              description: 'Map where keys are of type: #/components/schemas/deonticIdref'
+            actions:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/Action'
+              description: 'Map where keys are of type: #/components/schemas/actionsIdref'
+            objects:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/Object'
+              description: 'Map where keys are of type: #/components/schemas/objectIdref'
+            facts:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/Fact'
+              description: 'Map where keys are of type: #/components/schemas/factIdref'
+            textClauses:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/TextClause'
+              description: 'Map where keys are of type: #/components/schemas/textIdref'
+            encryptedContractParts:
+              type: object
+              additionalProperties:
+                type: string
+              description: 'Map where keys are of type: #/components/schemas/encryptedIdref'
+            operativePart:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/CELDeonticStructuredBlock'
+              description: 'Map where keys are of type: #/components/schemas/deonticStructuredBlockIdref'
+            signatories:
+              type: array
+              items:
+                $ref: '#/components/schemas/personUserIdref'
+    Party:
+      allOf:
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - $ref: '#/components/schemas/Encryptable'
+        - $ref: '#/components/schemas/WithMetadata'
+        - type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/partyIdref'
+            name:
+              type: string
+            details:
+              type: object
+              additionalProperties:
+                type: string
+              description: Map where keys are strings
+            address:
+              type: string
+            deonticsIssued:
+              type: array
+              items:
+                $ref: '#/components/schemas/deonticIdref'
+            actionsIsSubject:
+              type: array
+              items:
+                $ref: '#/components/schemas/actionIdref'
+    PersonUser:
+      allOf:
+        - $ref: '#/components/schemas/Party'
+        - type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/personUserIdref'
+            signature:
+              type: string
+    CELPerson:
+      allOf:
+        - $ref: '#/components/schemas/PersonUser'
+    MCOUser:
+      allOf:
+        - $ref: '#/components/schemas/PersonUser'
+        - required:
+            - role
+          type: object
+          properties:
+            role:
+              type: string
+              enum:
+                - Simple
+                - Creator
+                - Adaptor
+                - Instantiator
+                - Producer
+                - Distributor
+                - EndUser
+                - Collective
+            socialTag:
+              type: string
+            actOnBehalfOf:
+              type: array
+              items:
+                $ref: '#/components/schemas/personUserIdref'
+            belongsToCollective:
+              type: array
+              items:
+                $ref: '#/components/schemas/personUserIdref'
+            isRightsOwnerOf:
+              type: array
+              items:
+                $ref: '#/components/schemas/ipentityIdref'
+    Organization:
+      allOf:
+        - $ref: '#/components/schemas/Party'
+        - type: object
+          properties:
+            signatory:
+              $ref: '#/components/schemas/personUserIdref'
+    Deontic:
+      allOf:
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - $ref: '#/components/schemas/Encryptable'
+        - $ref: '#/components/schemas/WithMetadata'
+        - required:
+            - act
+            - actedBySubject
+            - type
+          type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/deonticIdref'
+            type:
+              $ref: '#/components/schemas/DeonticTypeEnum'
+            textClauses:
+              type: array
+              items:
+                $ref: '#/components/schemas/textIdref'
+            act:
+              $ref: '#/components/schemas/actionIdref'
+            actedBySubject:
+              $ref: '#/components/schemas/partyIdref'
+            actObjects:
+              type: array
+              items:
+                $ref: '#/components/schemas/objectIdref'
+            resultantObject:
+              type: array
+              items:
+                $ref: '#/components/schemas/itemIdref'
+            constraints:
+              type: array
+              items:
+                $ref: '#/components/schemas/factIdref'
+            issuer:
+              $ref: '#/components/schemas/partyIdref'
+          discriminator:
+            propertyName: type
+            mapping:
+              CELPermission: '#/components/schemas/CELPermission'
+              MCOPermission: '#/components/schemas/MCOPermission'
+    TextClause:
+      allOf:
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/textIdref'
+            innerTextClauses:
+              type: array
+              items:
+                $ref: '#/components/schemas/textIdref'
+            paragraphs:
+              type: object
+              additionalProperties:
+                type: string
+              description: 'Map where keys are of type: #/components/schemas/textIdref'
+            encryptedParagraphs:
+              type: array
+              items:
+                $ref: '#/components/schemas/encryptedIdref'
+            text:
+              type: string
+    CELDeonticStructuredBlock:
+      allOf:
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - $ref: '#/components/schemas/Encryptable'
+        - type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/deonticStructuredBlockIdref'
+            textClauses:
+              type: array
+              items:
+                $ref: '#/components/schemas/textIdref'
+            innerDeonticStructuredBlocks:
+              type: array
+              items:
+                $ref: '#/components/schemas/deonticStructuredBlockIdref'
+            deontics:
+              type: array
+              items:
+                $ref: '#/components/schemas/deonticIdref'
+    CELDeonticStructuredClause:
+      allOf:
+        - $ref: '#/components/schemas/Deontic'
+        - type: object
+          properties:
+            number:
+              type: string
+            context:
+              type: array
+              items:
+                type: string
+            preCondition:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/CELCondition'
+              description: 'Map where keys are of type: #/components/schemas/conditionIdref'
+            postCondition:
+              $ref: '#/components/schemas/CELCondition'
+    CELCondition:
+      allOf:
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/conditionIdref'
+            actionStatus:
+              type: string
+              enum:
+                - ActionStarted
+                - ActionDone
+            withDelay:
+              type: string
+            validity:
+              type: string
+    MCODeonticExpression:
+      allOf:
+        - $ref: '#/components/schemas/Deontic'
+    Permission:
+      allOf:
+        - $ref: '#/components/schemas/Deontic'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Permission
+            percentage:
+              type: number
+              format: float
+            incomePercentage:
+              type: number
+              format: float
+            isExclusive:
+              type: boolean
+            hasSublicenseRight:
+              type: boolean
+    CELPermission:
+      allOf:
+        - $ref: '#/components/schemas/CELDeonticStructuredClause'
+        - $ref: '#/components/schemas/Permission'
+    MCOPermission:
+      allOf:
+        - $ref: '#/components/schemas/MCODeonticExpression'
+        - $ref: '#/components/schemas/Permission'
+    Action:
+      allOf:
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - required:
+            - type
+          type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/actionIdref'
+            type:
+              $ref: '#/components/schemas/ActionTypeEnum'
+            impliesAlso:
+              type: array
+              items:
+                $ref: '#/components/schemas/actionIdref'
+            rightGivenBy:
+              type: array
+              items:
+                $ref: '#/components/schemas/personUserIdref'
+          discriminator:
+            propertyName: type
+            mapping:
+              Trade: '#/components/schemas/Trade'
+              Provide: '#/components/schemas/Provide'
+              Payment: '#/components/schemas/Payment'
+              Notify: '#/components/schemas/Notify'
+              UserDefinedAction: '#/components/schemas/UserDefinedAction'
+    Trade:
+      allOf:
+        - $ref: '#/components/schemas/Action'
+        - required:
+            - sellsDeontic
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Trade
+            sellsDeontic:
+              $ref: '#/components/schemas/deonticIdref'
+    Provide:
+      allOf:
+        - $ref: '#/components/schemas/Action'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Provide
+            isOnLoan:
+              type: boolean
+            recipients:
+              type: array
+              items:
+                $ref: '#/components/schemas/partyIdref'
+    Payment:
+      allOf:
+        - $ref: '#/components/schemas/Action'
+        - required:
+            - beneficiaries
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Payment
+            beneficiaries:
+              minItems: 1
+              type: array
+              items:
+                $ref: '#/components/schemas/partyIdref'
+            incomeSources:
+              type: array
+              items:
+                $ref: '#/components/schemas/actionIdref'
+            amount:
+              type: number
+              format: float
+            currency:
+              type: string
+            incomePercentage:
+              type: number
+              format: float
+    Notify:
+      allOf:
+        - $ref: '#/components/schemas/Action'
+        - required:
+            - recipients
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Notify
+            recipients:
+              minItems: 1
+              type: array
+              items:
+                $ref: '#/components/schemas/partyIdref'
+            isAbout:
+              type: array
+              items:
+                $ref: '#/components/schemas/actionIdref'
+    UserDefinedAction:
+      allOf:
+        - $ref: '#/components/schemas/Action'
+        - required:
+            - name
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - UserDefinedAction
+            href:
+              type: string
+            name:
+              type: string
+            standardReference:
+              type: string
+            definition:
+              type: string
+    Object:
+      type: object
+      properties:
+        idRef:
+          $ref: '#/components/schemas/objectIdref'
+    Item:
+      allOf:
+        - $ref: '#/components/schemas/Object'
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/itemIdref'
+            relatedIdentifiers:
+              type: array
+              items:
+                type: string
+            name:
+              type: string
+    IPEntity:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - $ref: '#/components/schemas/WithMetadata'
+        - required:
+            - isDigital
+            - type
+          type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/ipentityIdref'
+            type:
+              $ref: '#/components/schemas/IPEntityTypeEnum'
+            socialTag:
+              type: string
+            isDigital:
+              type: boolean
+            rightsOwner:
+              type: array
+              items:
+                $ref: '#/components/schemas/personUserIdref'
+            isMadeUpOf:
+              type: array
+              items:
+                $ref: '#/components/schemas/ipentityIdref'
+            resultedFrom:
+              type: array
+              items:
+                $ref: '#/components/schemas/actionIdref'
+            isAudio:
+              type: boolean
+            segments:
+              type: array
+              items:
+                $ref: '#/components/schemas/ipentityIdref'
+            tracks:
+              type: array
+              items:
+                $ref: '#/components/schemas/trackIdref'
+            intervals:
+              type: array
+              items:
+                $ref: '#/components/schemas/intervalIdref'
+          discriminator:
+            propertyName: type
+            mapping:
+              Event: '#/components/schemas/Event'
+              Segment: '#/components/schemas/Segment'
+    Event:
+      allOf:
+        - $ref: '#/components/schemas/IPEntity'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Event
+    Segment:
+      allOf:
+        - $ref: '#/components/schemas/IPEntity'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Segment
+            segmentOf:
+              $ref: '#/components/schemas/ipentityIdref'
+            contains:
+              type: array
+              items:
+                $ref: '#/components/schemas/ipentityIdref'
+            onTrack:
+              type: array
+              items:
+                $ref: '#/components/schemas/trackIdref'
+    Service:
+      allOf:
+        - $ref: '#/components/schemas/Object'
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - required:
+            - type
+          type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/objectIdref'
+            type:
+              $ref: '#/components/schemas/ServiceTypeEnum'
+    SubjectWrapperObject:
+      allOf:
+        - $ref: '#/components/schemas/Object'
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - required:
+            - partyRefersTo
+          type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/objectIdref'
+            partyRefersTo:
+              $ref: '#/components/schemas/partyIdref'
+    Track:
+      allOf:
+        - $ref: '#/components/schemas/Object'
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - required:
+            - trackNumber
+          type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/objectIdref'
+            trackNumber:
+              minimum: 1
+              type: integer
+    Interval:
+      allOf:
+        - $ref: '#/components/schemas/Object'
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - required:
+            - duration
+            - end
+            - start
+          type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/objectIdref'
+            start:
+              type: string
+            end:
+              type: string
+            duration:
+              type: string
+            onTimeline:
+              type: string
+    Fact:
+      allOf:
+        - $ref: '#/components/schemas/IdentifiedThing'
+        - required:
+            - type
+          type: object
+          properties:
+            idRef:
+              $ref: '#/components/schemas/factIdref'
+            type:
+              $ref: '#/components/schemas/FactTypeEnum'
+            isTrue:
+              type: boolean
+          discriminator:
+            propertyName: type
+            mapping:
+              FactCoposition: '#/components/schemas/FactCoposition'
+              ActionEventFact: '#/components/schemas/ActionEventFact'
+              TogetherWith: '#/components/schemas/TogetherWith'
+              AccessPolicy: '#/components/schemas/AccessPolicy'
+              DeliveryModality: '#/components/schemas/DeliveryModality'
+              Device: '#/components/schemas/Device'
+              IPEntityContext: '#/components/schemas/IPEntityContext'
+              Language: '#/components/schemas/Language'
+              Length: '#/components/schemas/Length'
+              MaterialFormat: '#/components/schemas/MaterialFormat'
+              Means: '#/components/schemas/Means'
+              Runs: '#/components/schemas/Runs'
+              ServiceAccessPolicy: '#/components/schemas/ServiceAccessPolicy'
+              ServiceChannelContext: '#/components/schemas/ServiceChannelContext'
+              SpatialContext: '#/components/schemas/SpatialContext'
+              TemporalContext: '#/components/schemas/TemporalContext'
+              UserTimeAccess: '#/components/schemas/UserTimeAccess'
+              UserDefinedFact: '#/components/schemas/UserDefinedFact'
+    FactCoposition:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - composedFacts
+            - compositionType
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - FactCoposition
+            compositionType:
+              type: string
+              enum:
+                - Negation
+                - Union
+                - Intersection
+            composedFacts:
+              minItems: 1
+              type: array
+              items:
+                $ref: '#/components/schemas/factIdref'
+    ActionEventFact:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - status
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - ActionEventFact
+            validity:
+              type: string
+            withDelay:
+              type: string
+            status:
+              type: string
+              enum:
+                - Started
+                - Done
+            eventThatMakesTrue:
+              $ref: '#/components/schemas/ipentityIdref'
+            actionThatMakesTrue:
+              $ref: '#/components/schemas/actionIdref'
+    TogetherWith:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - TogetherWith
+            withIPEntity:
+              $ref: '#/components/schemas/ipentityIdref'
+    AccessPolicy:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - restriction
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - AccessPolicy
+            restriction:
+              type: string
+              enum:
+                - FreeOfCharge
+                - Pay
+                - PayPerPackage
+                - PayPerView
+                - Subscription
+    DeliveryModality:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - restriction
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - DeliveryModality
+            restriction:
+              type: string
+              enum:
+                - Linear
+                - Broadcasting
+                - Webcasting
+                - NonLinear
+                - OnDemandBasis
+                - OnDemandDownload
+                - OnDemandStreaming
+    Device:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - restriction
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Device
+            restriction:
+              type: string
+              enum:
+                - Computer
+                - MobileDevice
+                - MobileBroadcastDevice
+                - MobileTelecommunicationDevice
+                - RobotDevice
+                - StorageDevice
+                - TelevisionDevice
+                - TelevisionSet
+    IPEntityContext:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - partOf
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - IPEntityContext
+            partOf:
+              type: array
+              items:
+                $ref: '#/components/schemas/ipentityIdref'
+    Language:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - languages
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Language
+            languages:
+              type: array
+              items:
+                minItems: 1
+                type: string
+    Length:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - maxLength
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Length
+            maxLength:
+              type: string
+    MaterialFormat:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - MaterialFormat
+            matchesFormatComplianceProfile:
+              type: string
+            aspectRatio:
+              type: string
+            audioFormat:
+              type: string
+            format:
+              type: string
+            maxBitrate:
+              minimum: 0
+              type: integer
+            maxLines:
+              minimum: 0
+              type: integer
+            minBitrate:
+              minimum: 0
+              type: integer
+            minLines:
+              minimum: 0
+              type: integer
+            videoFormat:
+              type: string
+    Means:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - restriction
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Means
+            restriction:
+              type: string
+              enum:
+                - Videogram
+                - TransmissionTechnology
+                - BroadcastTechnology
+                - Cable
+                - IPNetwork
+                - MobileBroadcastTechnology
+                - Satellite
+                - Terrestrial
+                - Internet
+                - MobileTechnology
+                - MobileTelecommunicationTechnology
+    Runs:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - numberOfRuns
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Runs
+            numberOfRuns:
+              minimum: 0
+              type: integer
+            validity:
+              type: string
+            numberOfRepetitions:
+              minimum: 0
+              type: integer
+    ServiceAccessPolicy:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - restriction
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - ServiceAccessPolicy
+            restriction:
+              type: string
+              enum:
+                - Open
+                - Restricted
+                - Hotel
+                - PublicPerformanceHalls
+                - Transportations
+                - Airplanes
+                - BusesMetro
+                - Ships
+                - Trains
+    ServiceChannelContext:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - servicesAndChannels
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - ServiceChannelContext
+            servicesAndChannels:
+              type: array
+              items:
+                minItems: 1
+                type: string
+    SpatialContext:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - countries
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - SpatialContext
+            countries:
+              type: array
+              items:
+                minItems: 1
+                type: string
+            regions:
+              type: array
+              items:
+                type: string
+    TemporalContext:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - TemporalContext
+            afterDate:
+              type: string
+            beforeDate:
+              type: string
+    UserTimeAccess:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - restriction
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - UserTimeAccess
+            restriction:
+              type: string
+              enum:
+                - Unlimited
+                - Limited
+            validity:
+              type: string
+    UserDefinedFact:
+      allOf:
+        - $ref: '#/components/schemas/Fact'
+        - required:
+            - name
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - UserDefinedFact
+            href:
+              type: string
+            name:
+              type: string
+            standardReference:
+              type: string
+            definition:
+              type: string
+    ContractRelationsEnum:
+      type: string
+      enum:
+        - supersedes
+        - cancels
+        - prevailsOver
+        - isAmendmentOf
+    PartyTypeEnum:
+      type: string
+      enum:
+        - CELPerson
+        - MCOUser
+        - Organization
+    DeonticTypeEnum:
+      type: string
+      enum:
+        - StatementSimple
+        - Permission
+        - CELPermission
+        - MCOPermission
+        - Obligation
+        - Prohibition
+    ActionTypeEnum:
+      type: string
+      enum:
+        - Simple
+        - CreateWork
+        - Distribute
+        - EndUserAction
+        - ModifyCopy
+        - Dub
+        - MoveContent
+        - Render
+        - MakeAdaptation
+        - MakeCopy (Duplicate)
+        - MakeAdaptationInstanceCopy
+        - MakeAdaptationManifestationCopy
+        - MakeWorkInstanceCopy
+        - MakeWorkManifestationCopy
+        - MakeInstance (Fixate)
+        - MakeAdaptationInstance
+        - MakeWorkInstance
+        - MakeManifestation
+        - MakeAdaptationManifestation
+        - MakeWorkManifestation
+        - Produce
+        - PublicCommunication
+        - Broadcast
+        - Download
+        - Stream
+        - CommunicationToThePublic
+        - PublicPerformance
+        - Synchronise
+        - GenericAction
+        - Reuse
+        - ExploitIPRights
+        - Transform
+        - Translate
+        - MakeCutAndEdit
+        - MakeExcerpt
+        - MakeRadioProduct
+        - Remix
+        - CreativeTransform
+        - Novelization
+        - Prequel
+        - Sequel
+        - Remake
+        - Spinoff
+        - RelAct
+        - Issue
+        - Obtain
+        - PossessProperty
+        - Revoke
+        - Rel-mx-Act
+        - Rel-sx-Act
+        - Adapt
+        - Delete
+        - Diminish
+        - Embed
+        - Enhance
+        - Enlarge
+        - Execute
+        - Install
+        - Modify
+        - Move
+        - Play
+        - Print
+        - Reduce
+        - Uninstall
+        - RightsUri
+        - Trade
+        - Consume
+        - Match
+        - Provide
+        - Payment
+        - Notify
+        - UserDefinedAction
+    IPEntityTypeEnum:
+      type: string
+      enum:
+        - Simple
+        - Adaptation
+        - Excerpt
+        - Copy
+        - AdaptationInstanceCopy
+        - AdaptationManifestationCopy
+        - WorkInstanceCopy
+        - WorkManifestationCopy
+        - Instance
+        - AdaptationInstance
+        - WorkInstance
+        - Manifestation
+        - AdaptationManifestation
+        - WorkManifestation
+        - Product
+        - Work
+        - Event
+        - Segment
+    ServiceTypeEnum:
+      type: string
+      enum:
+        - Simple
+        - Authenticate
+        - Deliver
+        - Describe
+        - Identify
+        - InteractWith
+        - Package
+        - Post
+        - Present
+        - Process
+        - Store
+        - Verify
+    FactTypeEnum:
+      type: string
+      enum:
+        - Simple
+        - FactCoposition
+        - ActionEventFact
+        - TogetherWith
+        - ExploitationCondition
+        - AccessPolicy
+        - CopyrightExceptionFact
+        - DeliveryModality
+        - Device
+        - IPEntityContext
+        - Language
+        - Length
+        - MaterialFormat
+        - Means
+        - Runs
+        - ServiceAccessPolicy
+        - ServiceChannelContext
+        - SpatialContext
+        - TemporalContext
+        - UserTimeAccess
+        - UserDefinedFact
+    inline_response_200:
+      discriminator:
+        propertyName: type
+        mapping:
+          CELPerson: '#/components/schemas/CELPerson'
+          MCOUser: '#/components/schemas/MCOUser'
+          Organization: '#/components/schemas/Organization'
+      oneOf:
+        - $ref: '#/components/schemas/CELPerson'
+        - $ref: '#/components/schemas/MCOUser'
+        - $ref: '#/components/schemas/Organization'
+    inline_response_200_1:
+      discriminator:
+        propertyName: type
+        mapping:
+          CELPerson: '#/components/schemas/CELPerson'
+          MCOUser: '#/components/schemas/MCOUser'
+      oneOf:
+        - $ref: '#/components/schemas/CELPerson'
+        - $ref: '#/components/schemas/MCOUser'
+    inline_response_200_2:
+      oneOf:
+        - $ref: '#/components/schemas/CELDeonticStructuredClause'
+        - $ref: '#/components/schemas/MCODeonticExpression'
+        - $ref: '#/components/schemas/CELPermission'
+        - $ref: '#/components/schemas/MCOPermission'
+    inline_response_200_3:
+      discriminator:
+        propertyName: type
+        mapping:
+          Trade: '#/components/schemas/Trade'
+          Provide: '#/components/schemas/Provide'
+          Payment: '#/components/schemas/Payment'
+          Notify: '#/components/schemas/Notify'
+          UserDefinedAction: '#/components/schemas/UserDefinedAction'
+      oneOf:
+        - $ref: '#/components/schemas/Action'
+        - $ref: '#/components/schemas/Trade'
+        - $ref: '#/components/schemas/Provide'
+        - $ref: '#/components/schemas/Payment'
+        - $ref: '#/components/schemas/Notify'
+        - $ref: '#/components/schemas/UserDefinedAction'
+    inline_response_200_4:
+      oneOf:
+        - $ref: '#/components/schemas/Item'
+        - $ref: '#/components/schemas/IPEntity'
+        - $ref: '#/components/schemas/Event'
+        - $ref: '#/components/schemas/Segment'
+        - $ref: '#/components/schemas/Service'
+        - $ref: '#/components/schemas/SubjectWrapperObject'
+        - $ref: '#/components/schemas/Track'
+        - $ref: '#/components/schemas/Interval'
+    inline_response_200_5:
+      discriminator:
+        propertyName: type
+        mapping:
+          Simple: '#/components/schemas/Fact'
+          FactCoposition: '#/components/schemas/FactCoposition'
+          ActionEventFact: '#/components/schemas/ActionEventFact'
+          TogetherWith: '#/components/schemas/TogetherWith'
+          AccessPolicy: '#/components/schemas/AccessPolicy'
+          DeliveryModality: '#/components/schemas/DeliveryModality'
+          Device: '#/components/schemas/Device'
+          IPEntityContext: '#/components/schemas/IPEntityContext'
+          Language: '#/components/schemas/Language'
+          Length: '#/components/schemas/Length'
+          MaterialFormat: '#/components/schemas/MaterialFormat'
+          Means: '#/components/schemas/Means'
+          Runs: '#/components/schemas/Runs'
+          ServiceAccessPolicy: '#/components/schemas/ServiceAccessPolicy'
+          ServiceChannelContext: '#/components/schemas/ServiceChannelContext'
+          SpatialContext: '#/components/schemas/SpatialContext'
+          TemporalContext: '#/components/schemas/TemporalContext'
+          UserTimeAccess: '#/components/schemas/UserTimeAccess'
+          UserDefinedFact: '#/components/schemas/UserDefinedFact'
+      oneOf:
+        - $ref: '#/components/schemas/Fact'
+        - $ref: '#/components/schemas/FactCoposition'
+        - $ref: '#/components/schemas/ActionEventFact'
+        - $ref: '#/components/schemas/TogetherWith'
+        - $ref: '#/components/schemas/AccessPolicy'
+        - $ref: '#/components/schemas/DeliveryModality'
+        - $ref: '#/components/schemas/Device'
+        - $ref: '#/components/schemas/IPEntityContext'
+        - $ref: '#/components/schemas/Language'
+        - $ref: '#/components/schemas/Length'
+        - $ref: '#/components/schemas/MaterialFormat'
+        - $ref: '#/components/schemas/Means'
+        - $ref: '#/components/schemas/Runs'
+        - $ref: '#/components/schemas/ServiceAccessPolicy'
+        - $ref: '#/components/schemas/ServiceChannelContext'
+        - $ref: '#/components/schemas/SpatialContext'
+        - $ref: '#/components/schemas/TemporalContext'
+        - $ref: '#/components/schemas/UserTimeAccess'
+        - $ref: '#/components/schemas/UserDefinedFact'
+  responses:
+    parserError:
+      description: parser error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errorType:
+                type: string
+    invalidEthereumAddress:
+      description: invalid Ethereum address
+      content:
+        text/plain:
+          schema:
+            type: string
+            x-content-type: text/plain
+    invalidAlgorandAddress:
+      description: invalid Algorand address
+      content:
+        text/plain:
+          schema:
+            type: string
+            x-content-type: text/plain
+    idError:
+      description: id reference not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errorType:
+                type: string
+    mcoContract:
+      description: a MCO contract
+      content:
+        text/plain:
+          schema:
+            type: string
+            x-content-type: text/plain
+          examples:
+            turtleExample:
+              $ref: 'https://scm.linkeddata.es/examples/examples.yaml#/turtleExample'
+    celContract:
+      description: a CEL contract
+      content:
+        application/xml:
+          schema:
+            type: string
+            x-content-type: application/xml
+    scmIdref:
+      description: a smart contract for media reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/scmIdref'
+    ethereumAddress:
+      description: an Ethereum address
+      content:
+        text/plain:
+          schema:
+            type: string
+            x-content-type: text/plain
+    encryptedIdref:
+      description: an encryptedId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/encryptedIdref'
+    contractIdref:
+      description: an contractId reference
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              contractIdref:
+                $ref: '#/components/schemas/contractIdref'
+    personUserIdref:
+      description: an personUserId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/personUserIdref'
+    partyIdref:
+      description: an partyId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/partyIdref'
+    deonticIdref:
+      description: an deonticId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/deonticIdref'
+    deonticStructuredBlockIdref:
+      description: an deonticStructuredBlockId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/deonticStructuredBlockIdref'
+    actionId:
+      description: an actionId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/actionIdref'
+    ipentityIdref:
+      description: an ipentityId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/ipentityIdref'
+    itemIdref:
+      description: an itemId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/itemIdref'
+    trackIdref:
+      description: an trackId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/trackIdref'
+    intervalIdref:
+      description: an intervalId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/intervalIdref'
+    objectIdref:
+      description: an objectId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/objectIdref'
+    factIdref:
+      description: an factId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/factIdref'
+    textIdref:
+      description: an textId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/textIdref'
+    conditionIdref:
+      description: an conditionId reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/conditionIdref'
+    idref:
+      description: an id reference
+      content:
+        text/plain:
+          schema:
+            $ref: '#/components/schemas/idref'
+    mediaSmartContract:
+      description: an object containing smart contract data
+      content:
+        application/json:
+          schema:
+            type: object
+    arrayOfContracts:
+      description: an array of contracts objects
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              contracts:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contract'
+    contract:
+      description: a contract object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Contract'
+    party:
+      description: a party object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_response_200'
+    personUser:
+      description: a cel person or mco user object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_response_200_1'
+    deontic:
+      description: a deontic expression object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_response_200_2'
+    celCondition:
+      description: a cel condition object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CELCondition'
+    action:
+      description: an action object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_response_200_3'
+    object:
+      description: an object object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_response_200_4'
+    ipentity:
+      description: an ipentity object
+      content:
+        application/json:
+          schema:
+            discriminator:
+              propertyName: type
+              mapping:
+                Segment: '#/components/schemas/Segment'
+            oneOf:
+              - $ref: '#/components/schemas/IPEntity'
+              - $ref: '#/components/schemas/Segment'
+    track:
+      description: a track object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Track'
+    interval:
+      description: an interval object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Interval'
+    service:
+      description: a service object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Service'
+    fact:
+      description: a fact object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_response_200_5'
+    algorandSmartContractAddress:
+      description: an object containing Algorand smart contract data
+      content:
+        application/json:
+          schema:
+            type: object
+  parameters:
+    scmIdref:
+      name: scmIdref
+      in: path
+      description: Alphanumeric ID of the smart contract for media
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/scmIdref'
+    contractIdref:
+      name: contractIdref
+      in: path
+      description: Alphanumeric ID of the contract to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/contractIdref'
+    personUserIdref:
+      name: personUserIdref
+      in: path
+      description: Alphanumeric ID of the personUser to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/personUserIdref'
+    partyIdref:
+      name: partyIdref
+      in: path
+      description: Alphanumeric ID of the party to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/partyIdref'
+    deonticIdref:
+      name: deonticIdref
+      in: path
+      description: Alphanumeric ID of the expression to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/deonticIdref'
+    deonticStructuredBlockIdref:
+      name: deonticStructuredBlockIdref
+      in: path
+      description: Alphanumeric ID of the expression block to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/deonticStructuredBlockIdref'
+    actionIdref:
+      name: actionIdref
+      in: path
+      description: Alphanumeric ID of the action to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/actionIdref'
+    ipentityIdref:
+      name: ipentityIdref
+      in: path
+      description: Alphanumeric ID of the ipentity to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/ipentityIdref'
+    itemIdref:
+      name: itemIdref
+      in: path
+      description: Alphanumeric ID of the ipentity to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/itemIdref'
+    trackIdref:
+      name: trackIdref
+      in: path
+      description: Alphanumeric ID of the track to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/trackIdref'
+    intervalIdref:
+      name: intervalIdref
+      in: path
+      description: Alphanumeric ID of the interval to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/intervalIdref'
+    objectIdref:
+      name: objectIdref
+      in: path
+      description: Alphanumeric ID of the object to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/objectIdref'
+    serviceIdref:
+      name: serviceIdref
+      in: path
+      description: Alphanumeric ID of the service to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/objectIdref'
+    factIdref:
+      name: factIdref
+      in: path
+      description: Alphanumeric ID of the fact to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/factIdref'
+    textIdref:
+      name: textIdref
+      in: path
+      description: Alphanumeric ID of the text to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/textIdref'
+    conditionIdref:
+      name: conditionIdref
+      in: path
+      description: Alphanumeric ID of the condition to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/conditionIdref'
+    idref:
+      name: idref
+      in: path
+      description: Alphanumeric ID of the thing to get
+      required: true
+      style: simple
+      explode: false
+      schema:
+        $ref: '#/components/schemas/idref'
+  requestBodies:
+    MCOReq:
+      content:
+        text/plain:
+          schema:
+            type: string
+          examples:
+            turtleExample:
+              $ref: 'https://scm.linkeddata.es/examples/examples.yaml#/turtleExample'
+    CELReq:
+      content:
+        application/xml:
+          schema:
+            type: string
+    EthereumAddress:
+      content:
+        text/plain:
+          schema:
+            type: string
+          examples:
+            addressExample:
+              $ref: 'https://scm.linkeddata.es/examples/examples.yaml#/smartContractAddressExample'
+    AlgorandAddress:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              address:
+                type: string
+              appId:
+                minimum: 1
+                type: integer
+              nftAppId:
+                minimum: 1
+                type: integer
+    contract:
+      description: a contract object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Contract'
+          examples:
+            contractObjExample:
+              $ref: 'https://scm.linkeddata.es/examples/examples.yaml#/contractObjExample'
+    party:
+      description: a party object
+      content:
+        application/json:
+          schema:
+            discriminator:
+              propertyName: type
+              mapping:
+                CELPerson: '#/components/schemas/CELPerson'
+                MCOUser: '#/components/schemas/MCOUser'
+                Organization: '#/components/schemas/Organization'
+            oneOf:
+              - $ref: '#/components/schemas/CELPerson'
+              - $ref: '#/components/schemas/MCOUser'
+              - $ref: '#/components/schemas/Organization'
+    personUser:
+      description: a cel person or mco user object
+      content:
+        application/json:
+          schema:
+            discriminator:
+              propertyName: type
+              mapping:
+                CELPerson: '#/components/schemas/CELPerson'
+                MCOUser: '#/components/schemas/MCOUser'
+            oneOf:
+              - $ref: '#/components/schemas/CELPerson'
+              - $ref: '#/components/schemas/MCOUser'
+    deontic:
+      description: a deontic expression object
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/CELDeonticStructuredClause'
+              - $ref: '#/components/schemas/MCODeonticExpression'
+              - $ref: '#/components/schemas/CELPermission'
+              - $ref: '#/components/schemas/MCOPermission'
+    celCondition:
+      description: a cel condition object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CELCondition'
+    action:
+      description: an action object
+      content:
+        application/json:
+          schema:
+            discriminator:
+              propertyName: type
+              mapping:
+                Trade: '#/components/schemas/Trade'
+                Provide: '#/components/schemas/Provide'
+                Payment: '#/components/schemas/Payment'
+                Notify: '#/components/schemas/Notify'
+                UserDefinedAction: '#/components/schemas/UserDefinedAction'
+            oneOf:
+              - $ref: '#/components/schemas/Action'
+              - $ref: '#/components/schemas/Trade'
+              - $ref: '#/components/schemas/Provide'
+              - $ref: '#/components/schemas/Payment'
+              - $ref: '#/components/schemas/Notify'
+              - $ref: '#/components/schemas/UserDefinedAction'
+    object:
+      description: an object object
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/Item'
+              - $ref: '#/components/schemas/IPEntity'
+              - $ref: '#/components/schemas/Event'
+              - $ref: '#/components/schemas/Segment'
+              - $ref: '#/components/schemas/Service'
+              - $ref: '#/components/schemas/SubjectWrapperObject'
+              - $ref: '#/components/schemas/Track'
+              - $ref: '#/components/schemas/Interval'
+    ipentity:
+      description: an ipentity object
+      content:
+        application/json:
+          schema:
+            discriminator:
+              propertyName: type
+              mapping:
+                Segment: '#/components/schemas/Segment'
+            oneOf:
+              - $ref: '#/components/schemas/IPEntity'
+              - $ref: '#/components/schemas/Segment'
+    track:
+      description: a track object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Track'
+    interval:
+      description: an interval object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Interval'
+    service:
+      description: a service object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Service'
+    fact:
+      description: a fact object
+      content:
+        application/json:
+          schema:
+            discriminator:
+              propertyName: type
+              mapping:
+                Simple: '#/components/schemas/Fact'
+                FactCoposition: '#/components/schemas/FactCoposition'
+                ActionEventFact: '#/components/schemas/ActionEventFact'
+                TogetherWith: '#/components/schemas/TogetherWith'
+                AccessPolicy: '#/components/schemas/AccessPolicy'
+                DeliveryModality: '#/components/schemas/DeliveryModality'
+                Device: '#/components/schemas/Device'
+                IPEntityContext: '#/components/schemas/IPEntityContext'
+                Language: '#/components/schemas/Language'
+                Length: '#/components/schemas/Length'
+                MaterialFormat: '#/components/schemas/MaterialFormat'
+                Means: '#/components/schemas/Means'
+                Runs: '#/components/schemas/Runs'
+                ServiceAccessPolicy: '#/components/schemas/ServiceAccessPolicy'
+                ServiceChannelContext: '#/components/schemas/ServiceChannelContext'
+                SpatialContext: '#/components/schemas/SpatialContext'
+                TemporalContext: '#/components/schemas/TemporalContext'
+                UserTimeAccess: '#/components/schemas/UserTimeAccess'
+                UserDefinedFact: '#/components/schemas/UserDefinedFact'
+            oneOf:
+              - $ref: '#/components/schemas/Fact'
+              - $ref: '#/components/schemas/FactCoposition'
+              - $ref: '#/components/schemas/ActionEventFact'
+              - $ref: '#/components/schemas/TogetherWith'
+              - $ref: '#/components/schemas/AccessPolicy'
+              - $ref: '#/components/schemas/DeliveryModality'
+              - $ref: '#/components/schemas/Device'
+              - $ref: '#/components/schemas/IPEntityContext'
+              - $ref: '#/components/schemas/Language'
+              - $ref: '#/components/schemas/Length'
+              - $ref: '#/components/schemas/MaterialFormat'
+              - $ref: '#/components/schemas/Means'
+              - $ref: '#/components/schemas/Runs'
+              - $ref: '#/components/schemas/ServiceAccessPolicy'
+              - $ref: '#/components/schemas/ServiceChannelContext'
+              - $ref: '#/components/schemas/SpatialContext'
+              - $ref: '#/components/schemas/TemporalContext'
+              - $ref: '#/components/schemas/UserTimeAccess'
+              - $ref: '#/components/schemas/UserDefinedFact'

@@ -1,0 +1,88 @@
+{
+ "contractId": "Use Case Contract Download No Label",
+ "textVersion": "\n        \n        \n    ",
+ "metadata": {
+  "information": "<ns0:SimpleDC xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:ns0=\"urn:mpeg:mpeg21:cel:core:2015\">\n            <dc:title>Use Case Contract Download No Label</dc:title>\n            <dc:date>2020-05-20</dc:date>\n            <dc:creator>UPC:DMAG</dc:creator>\n            <dc:identifier>urn:mpeg:mpeg21:cel:2020:download_no_label</dc:identifier>\n        </ns0:SimpleDC>\n    "
+ },
+ "party": [
+  {
+   "id": "licensor",
+   "part": {
+    "name": "AG",
+    "details": "Aggregator AG"
+   }
+  },
+  {
+   "id": "licensee",
+   "part": {
+    "name": "DS",
+    "details": "Digital Sale Company DS"
+   }
+  }
+ ],
+ "body": {
+  "operativePart": [
+   {
+    "subject_partyRef": "licensor",
+    "act": {
+     "relr": "Possess Property"
+    },
+    "object": [
+     {
+      "item": {
+       "name": "SR",
+       "Identifier": "isan:1234sra"
+      }
+     }
+    ]
+   },
+   {
+    "subject_partyRef": "licensee",
+    "act": {
+     "provide": [
+      "licensee"
+     ]
+    },
+    "constraint": {
+     "deliveryModality": "urn:mpeg:mpeg21:cel:ipre:2015/DeliveryModality#OnDemandDownload",
+     "means": []
+    },
+    "issuer": "licensor",
+    "id": "P1",
+    "object": [
+     {
+      "item": {
+       "name": "SR",
+       "Identifier": "isan:1234sra"
+      }
+     }
+    ]
+   },
+   {
+    "subject_partyRef": "licensor",
+    "act": {
+     "payment": {
+      "incomePercentage": "70",
+      "amount": "2",
+      "beneficiary": "licensor"
+     }
+    },
+    "issuer": "licensee",
+    "id": "O1",
+    "object": [
+     {
+      "item": {
+       "name": "SR",
+       "Identifier": "isan:1234sra"
+      }
+     }
+    ]
+   }
+  ],
+  "type": [
+   "Statement",
+   "Permission",
+   "Obligation"
+  ]
+ }
+}

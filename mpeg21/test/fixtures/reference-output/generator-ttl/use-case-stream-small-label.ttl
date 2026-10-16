@@ -1,0 +1,177 @@
+@prefix : </#>.
+@prefix mpe: <>.
+@prefix mvc: <http://purl.oclc.org/NET/mvco.owl#>.
+@prefix rd: <http://www.w3.org/2000/01/rdf-schema#>.
+
+mpe:action1
+    a <urn:mpeg:mpeg21:mco:rele:2015#play>;
+    mvc:actedby mpe:Consumer;
+    mvc:actedover mpe:Song.
+mpe:action2
+a mvc:distribute; mvc:actedby mpe:StreamingService; mvc:actedover mpe:Song.
+mpe:action3
+    a <urn:mpeg:mpeg21:mco:core:2012#provide>;
+    mvc:actedby mpe:RecordLabel;
+    mvc:actedover mpe:Song.
+mpe:action4 a mvc:distribute; mvc:actedby mpe:RecordLabel; mvc:actedover mpe:Song.
+
+mpe:action5
+    a <urn:mpeg:mpeg21:mco:core:2012#provide>;
+    mvc:actedby mpe:Publisher;
+    mvc:actedover mpe:Song.
+mpe:action6 a mvc:distribute; mvc:actedby mpe:Aggregator; mvc:actedover mpe:Song.
+
+mpe:Aggregator a mvc:distributor; rd:label "AGGREGATOR".
+
+mpe:Author a mvc:creator; rd:label "AUTHOR/BAND".
+
+mpe:Consumer a mvc:enduser; rd:label "CONSUMER".
+
+mpe:contract2
+    a <urn:mpeg:mpeg21:mco:core:2012#contract>;
+    rd:label
+        "CONTRACT 2 - On demand stream - Indie labels. For record labels that are represented by a digital aggregator/distributor";
+    <urn:mpeg:mpeg21:mco:core:2012#hasparty>
+        mpe:Aggregator, mpe:Author, mpe:Consumer, mpe:MechanicalLicenseAgent,
+        mpe:PerformingRighthsOrganisation, mpe:Publisher, mpe:RecordLabel,
+        mpe:StreamingService.
+mpe:MechanicalLicenseAgent
+a <urn:mpeg:mpeg21:mco:core:2012#party>; rd:label "MECHANICAL LICENSE AGENT".
+mpe:obligation1
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:Publisher;
+    rd:label "Publisher provide a song to streaming";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:action5.
+mpe:obligation2
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:RecordLabel;
+    rd:label "Indie label provide a song to publisher";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:action3.
+mpe:obligation3
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:Consumer;
+    rd:label "Consumer pays a fixed rate";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay1.
+mpe:obligation4
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:StreamingService;
+    rd:label "Streaming service pays 10% to publisher";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay2.
+mpe:obligation5
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:StreamingService;
+    rd:label "Streaming service pays 1% to PRO";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay3.
+mpe:obligation6
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:StreamingService;
+    rd:label "Streaming service must pay 50% to Aggregator";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay4.
+mpe:obligation7
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:StreamingService;
+    rd:label "Aggregator must pay 85% to Record Label";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay5.
+mpe:obligation8
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:StreamingService;
+    rd:label "Indie label must pay 10-50% to Author";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay6.
+mpe:obligation9
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:StreamingService;
+    rd:label "Mechanical License Agent must pay to Publisher";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay7.
+mpe:pay1
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:Consumer;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasamount> "19";
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:StreamingService.
+mpe:pay2
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:StreamingService;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:MechanicalLicenseAgent;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasincomepercentage> "10".
+mpe:pay3
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:StreamingService;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary>
+    mpe:PerformingRighthsOrganisation;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasincomepercentage> "1".
+mpe:pay4
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:StreamingService;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:Aggregator;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasincomepercentage> "50".
+mpe:pay5
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:Aggregator;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:RecordLabel;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasincomepercentage> "85".
+mpe:pay6
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:RecordLabel;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:Author;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasincomepercentage> "10".
+mpe:pay7
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:MechanicalLicenseAgent;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:Publisher;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasincomepercentage> "50".
+mpe:PerformingRighthsOrganisation
+    a <urn:mpeg:mpeg21:mco:core:2012#party>;
+    rd:label "PERFORMING RIGHTS ORGANISATION".
+mpe:permission1
+    a mvc:permission;
+    mvc:issuedby mpe:StreamingService;
+    rd:label "Consumer can play a song";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#permitsaction> mpe:action1.
+mpe:permission2
+    a mvc:permission;
+    mvc:issuedby mpe:Publisher;
+    rd:label "Publisher authorises streaming service";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#permitsaction> mpe:action2.
+mpe:permission3
+    a mvc:permission;
+    mvc:issuedby mpe:Aggregator;
+    rd:label "Record label authorises streaming service";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#permitsaction> mpe:action2.
+mpe:permission4
+    a mvc:permission;
+    mvc:issuedby mpe:Author;
+    rd:label "Author authorises indie label to distribute";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#permitsaction> mpe:action4.
+mpe:permission6
+    a mvc:permission;
+    mvc:issuedby mpe:RecordLabel;
+    rd:label "Indie label authorises aggregator to distribute";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract2;
+    <urn:mpeg:mpeg21:mco:core:2012#permitsaction> mpe:action6.
+mpe:Publisher a mvc:distributor; rd:label "PUBLISHER".
+
+mpe:RecordLabel a mvc:distributor; rd:label "INDIE LABEL".
+
+mpe:Song a mvc:work; rd:label "SONG".
+
+mpe:StreamingService a mvc:distributor; rd:label "STREAMING SERVICE".
+

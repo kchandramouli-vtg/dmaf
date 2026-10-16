@@ -1,0 +1,161 @@
+@prefix : </#>.
+@prefix mpe: <>.
+@prefix mvc: <http://purl.oclc.org/NET/mvco.owl#>.
+@prefix rd: <http://www.w3.org/2000/01/rdf-schema#>.
+
+mpe:action1
+    a <urn:mpeg:mpeg21:mco:rele:2015#play>;
+    mvc:actedby mpe:Consumer;
+    mvc:actedover mpe:Song.
+mpe:action2 a mvc:distribute; mvc:actedby mpe:DigitalSale; mvc:actedover mpe:Song.
+
+mpe:action3
+    a <urn:mpeg:mpeg21:mco:core:2012#provide>;
+    mvc:actedby mpe:ArtistBand;
+    mvc:actedover mpe:Song.
+mpe:action4 a mvc:distribute; mvc:actedby mpe:RecordLabel; mvc:actedover mpe:Song.
+
+mpe:action5
+    a <urn:mpeg:mpeg21:mco:core:2012#provide>;
+    mvc:actedby mpe:RecordLabel;
+    mvc:actedover mpe:Song.
+mpe:action9 a mvc:distribute; mvc:actedby mpe:RecordLabel; mvc:actedover mpe:Song.
+
+mpe:ArtistBand a <urn:mpeg:mpeg21:mco:core:2012#party>; rd:label "ARTIST / BAND".
+
+mpe:Consumer a mvc:enduser; rd:label "CONSUMER".
+
+mpe:contract6
+    a <urn:mpeg:mpeg21:mco:core:2012#contract>;
+    rd:label
+        "CONTRACT 6 - Digital sale - For artists who own their sound recording copyrights and use services like CD Baby or TuneCore.";
+    <urn:mpeg:mpeg21:mco:core:2012#hasparty>
+        mpe:ArtistBand, mpe:Consumer, mpe:DigitalSale, mpe:Musicians,
+        mpe:Publisher, mpe:RecordLabel, mpe:SongWriter.
+mpe:DigitalSale a mvc:distributor; rd:label "DIGITAL SALE".
+
+mpe:Musicians a <urn:mpeg:mpeg21:mco:core:2012#party>; rd:label "MUSICIANS".
+
+mpe:obligation1
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:Publisher;
+    rd:label "Record label provide a song to digital sale";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:action5.
+mpe:obligation2
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:RecordLabel;
+    rd:label "Artist to provide a song to record label";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:action3.
+mpe:obligation3
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:Consumer;
+    rd:label "Consumer pays a fixed rate";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay1.
+mpe:obligation4
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:RecordLabel;
+    rd:label "Rercord label pays 9 USD cents to publisher";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay2.
+mpe:obligation5
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:RecordLabel;
+    rd:label "Record Label pays 1% to Musicians";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay3.
+mpe:obligation6
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:DigitalSale;
+    rd:label "Digital sale must pay to Record Label";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay4.
+mpe:obligation7
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:RecordLabel;
+    rd:label "Publisher pays songwriters";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay7.
+mpe:obligation8
+    a <urn:mpeg:mpeg21:mco:core:2012#obligation>;
+    mvc:issuedby mpe:DigitalSale;
+    rd:label "Record label must pay 50% to artist/band";
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#obligatesaction> mpe:pay6.
+mpe:pay1
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:Consumer;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasamount> "1";
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:DigitalSale.
+mpe:pay2
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:RecordLabel;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasamount> "9";
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:Publisher.
+mpe:pay3
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:RecordLabel;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:Musicians;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasincomepercentage> "1".
+mpe:pay4
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:DigitalSale;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:RecordLabel;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasincomepercentage> "50".
+mpe:pay6
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:RecordLabel;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:ArtistBand;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasincomepercentage> "50".
+mpe:pay7
+    a <urn:mpeg:mpeg21:mco:pane:2015#payment>;
+    mvc:actedby mpe:Publisher;
+    <urn:mpeg:mpeg21:mco:pane:2015#hasamount> "2";
+    <urn:mpeg:mpeg21:mco:pane:2015#hasbeneficiary> mpe:SongWriter.
+mpe:permission1
+    a mvc:permission;
+    mvc:issuedby mpe:DigitalSale;
+    rd:label "Consumer can play a song";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#permitsaction> mpe:action1.
+mpe:permission2
+    a mvc:permission;
+    mvc:issuedby mpe:RecordLabel;
+    rd:label "Aggregator authorises digital sale to sell a song";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#permitsaction> mpe:action2.
+mpe:permission3
+    a mvc:permission;
+    mvc:issuedby mpe:Publisher;
+    rd:label "Publisher authorises the digital sale";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#permitsaction> mpe:action2.
+mpe:permission4
+    a mvc:permission;
+    mvc:issuedby mpe:ArtistBand;
+    rd:label "Artist/Band authorises record label to distribute";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#permitsaction> mpe:action4.
+mpe:permission9
+    a mvc:permission;
+    mvc:issuedby mpe:RecordLabel;
+    rd:label "Record label authorises aggregator a song";
+    <urn:mpeg:mpeg21:mco:core:2012#actedover> mpe:Song;
+    <urn:mpeg:mpeg21:mco:core:2012#issuedin> mpe:contract6;
+    <urn:mpeg:mpeg21:mco:core:2012#permitsaction> mpe:action9.
+mpe:Publisher a <urn:mpeg:mpeg21:mco:core:2012#party>; rd:label "PUBLISHER".
+
+mpe:RecordLabel a mvc:producer; rd:label "RECORD LABEL".
+
+mpe:Song a mvc:work; rd:label "SONG".
+
+mpe:SongWriter a <urn:mpeg:mpeg21:mco:core:2012#party>; rd:label "SONG WRITER".
+

@@ -1,0 +1,58 @@
+<cel-core:Contract xmlns:cel-core="urn:mpeg:mpeg21:cel:core:2015" xmlns:cel-ipre="urn:mpeg:mpeg21:cel:ipre:2015" xmlns:cel-pane="urn:mpeg:mpeg21:cel:pane:2015" xmlns:cel-rele="urn:mpeg:mpeg21:cel:rele:2015" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dii="urn:mpeg:mpeg21:2002:01-DII-NS" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:rel-r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:rel-mx="urn:mpeg:mpeg21:2003:01-REL-MX-NS" xsi:schemaLocation="urn:mpeg:mpeg21:cel:core:2015 cel-core.xsd     urn:mpeg:mpeg21:cel:ipre:2015 cel-ipre.xsd     urn:mpeg:mpeg21:cel:pane:2015 cel-pane.xsd    urn:mpeg:mpeg21:cel:rele:2015 cel-rele.xsd    urn:mpeg:mpeg21:2003:01-REL-R-NS http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-21_schema_files/rel-r/rel-sx.xsd     urn:mpeg:mpeg21:2003:01-REL-MX-NS http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-21_schema_files/rel-r/rel-mx.xsd" contractId="0x3562e4726Fa601caF79b16764bf24cD021522191">
+	<cel-core:Party id="licensor">
+		<cel-core:Person>
+			<cel-core:Name>RL</cel-core:Name>
+			<cel-core:Details>Record Label RL</cel-core:Details>
+		</cel-core:Person>
+	</cel-core:Party>
+	<cel-core:Party id="licensee">
+		<cel-core:Person>
+			<cel-core:Name>DS</cel-core:Name>
+			<cel-core:Details>Digital Sale Company DS</cel-core:Details>
+		</cel-core:Person>
+	</cel-core:Party>
+	<cel-core:Body>
+		<cel-core:OperativePart>
+			<cel-core:Statement>
+				<cel-core:Subject partyRef="licensor" />
+				<cel-core:Act>
+					<rel-r:PossessProperty />
+				</cel-core:Act>
+				<cel-core:Object>
+					<cel-core:Item name="SR">
+						<dii:Identifier>isan:1234sra</dii:Identifier>
+					</cel-core:Item>
+				</cel-core:Object>
+			</cel-core:Statement>
+			<cel-core:Permission id="P1">
+				<cel-core:Subject partyRef="licensee" />
+				<cel-core:Act>
+					<cel-core:Provide recipients="licensee" />
+				</cel-core:Act>
+				<cel-core:Object>
+					<cel-core:Item name="SR">
+						<dii:Identifier>isan:1234sra</dii:Identifier>
+					</cel-core:Item>
+				</cel-core:Object>
+				<cel-core:Constraint>
+					<cel-ipre:DeliveryModality href="urn:mpeg:mpeg21:cel:ipre:2015/DeliveryModality#OnDemandDownload" />
+				</cel-core:Constraint>
+				<cel-core:Issuer partyRef="licensor" />
+			</cel-core:Permission>
+			<cel-core:Obligation id="O1">
+				<cel-core:Subject partyRef="licensor" />
+				<cel-core:Act>
+					<cel-pane:Payment incomePercentage="70" amount="2000000000000000000">
+						<cel-pane:Beneficiary partyRef="licensor" />
+					</cel-pane:Payment>
+				</cel-core:Act>
+				<cel-core:Object>
+					<cel-core:Item name="SR">
+						<dii:Identifier>isan:1234sra</dii:Identifier>
+					</cel-core:Item>
+				</cel-core:Object>
+				<cel-core:Issuer partyRef="licensee" />
+			</cel-core:Obligation>
+		</cel-core:OperativePart>
+	</cel-core:Body>
+</cel-core:Contract>

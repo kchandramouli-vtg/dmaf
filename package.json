@@ -1,0 +1,40 @@
+{
+  "name": "dmaf-ipfs-chain-poc",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DMAF: MPEG-21 MCO agreements as ISO/IEC 21000-23 Smart Contracts for Media on Ethereum; MP3 on IPFS; pay-per-play through MetaMask",
+  "scripts": {
+    "chain": "hardhat node",
+    "compile": "hardhat compile",
+    "deploy": "hardhat run chain/scripts/deploy.js --network localhost",
+    "serve": "node tools/serve.mjs",
+    "scm": "node tools/scm-server.mjs",
+    "cel:setup": "node tools/cel-setup.mjs",
+    "cel": "node tools/cel.mjs",
+    "test": "hardhat test && node --test mpeg21/test/conformance.test.mjs mpeg21/test/api.test.mjs mpeg21/test/cel-live.test.mjs server/test/imaf.test.mjs server/test/auth.test.mjs",
+    "test:chain": "hardhat test",
+    "test:mpeg21": "node --test mpeg21/test/conformance.test.mjs mpeg21/test/api.test.mjs mpeg21/test/cel-live.test.mjs",
+    "test:imaf": "node --test server/test/imaf.test.mjs",
+    "test:server": "node --test server/test/imaf.test.mjs server/test/auth.test.mjs",
+    "db:migrate": "node tools/db-migrate.mjs",
+    "verify:payouts": "node tools/verify-payouts.mjs",
+    "templates": "node tools/build-mco-templates.mjs"
+  },
+  "devDependencies": {
+    "@frogcat/ttl2jsonld": "^0.0.6",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.1.0",
+    "@nomicfoundation/hardhat-ethers": "^3.1.3",
+    "@nomicfoundation/hardhat-network-helpers": "^1.1.0",
+    "@openzeppelin/contracts": "4.9.6",
+    "chai": "^4.5.0",
+    "hardhat": "^2.29.1"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ethers": "^6.15.0",
+    "js-yaml": "^4.1.0",
+    "jsonld": "^8.3.3",
+    "n3": "^1.17.4",
+    "pg": "^8.23.1"
+  }
+}
